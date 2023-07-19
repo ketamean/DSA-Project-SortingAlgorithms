@@ -1,10 +1,24 @@
 #include "DataGenerator.cpp"
-
 ///////////////////////////////////////
 ////////////////////////////////////////
 // SELECTION SORT
-void selectionSort_counting(int arr[], int n, int &comparisions, double &times) {
+void selectionSort_counting(int arr[], int n, int &comparisions, double &duration) {
+    double start = clock(); //get current time
     
+    for (int i = 0; i < n; i++) {
+        int minIndex = i, minVal = arr[i];
+
+        for (int j = i + 1; j < n; j++) {
+            if (++comparisions && arr[j] < minVal) {
+                minVal = arr[j];
+                minIndex = j;
+            }
+        }
+
+        swap(arr[i], arr[minIndex]);
+    }
+    duration = (clock() - start)/(double) CLOCKS_PER_SEC;
+    cout << "Operation took: " << duration << "secs." << endl;
 }
 // END SELECTION SORT
 ////////////////////////////////////////
