@@ -26,7 +26,29 @@ void selectionSort_counting(int arr[], int n, unsigned long long &comparisions, 
 ///////////////////////////////////////
 ////////////////////////////////////////
 // INSERTION SORT
+void insertion_sort(int arr[], int n, unsigned long long &comparisions)
+{
+    int i, key, j;
+    for (i = 1; ++comparisions && i < n; i++) {
+        key = arr[i];
+        j = i - 1;
+        // Move elements that are greater than the key 
+        //(which also is +1 index greater than the sorted part ending index) to one position ahead of their current position
+        while (++comparisions && j >= 0 && ++comparisions && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        arr[j + 1] = key;
+    }
+}
 
+void insertion_sort_counting(int arr[], int n, unsigned long long &comparisions, double &duration) {
+    comparisions = 0;
+    duration = 0;
+    double start = clock(); //get current time
+    insertion_sort(arr, n, comparisions);
+    duration = (clock() - start)/(double) CLOCKS_PER_SEC;
+}
 // END INSERTION SORT
 ////////////////////////////////////////
 ////////////////////////////////////////
@@ -107,7 +129,35 @@ void shakerSort_counting(int arr[], int n, unsigned long long &comparisions, dou
 ///////////////////////////////////////
 ////////////////////////////////////////
 // SHELL SORT
+void shellsort(int arr[], int n, unsigned long long &comparisions) {
+    // Pick a big interval value, in this case is n/2
+    for (int interval = n/2; ++comparisions && interval > 0; interval/= 2)
+    {
+        // Keep adding more element until the array is sorted 
+        for (int i = interval; ++comparisions && i < n; i += 1)
+        {
+            int j; 
+            // add a[i] to the elements that have been gap sorted
+            // save a[i] to a temporary variable to make a gap at position i
+            int temp = arr[i];
+            // push already sorted elements up until the correct location for a[i] is founded     
+            for (j = i; ++comparisions && j >= interval && ++comparisions && arr[j - interval] > temp; j -= interval)
+                arr[j] = arr[j - interval];
+              
+            // insert a[i] 
+            arr[j] = temp;
+        }
+    }
+    return;
+}
 
+void shellsort_counting(int arr[], int n, unsigned long long &comparisions, double &duration) {
+    comparisions = 0;
+    duration = 0;
+    double start = clock(); //get current time
+    shellsort(arr, n, comparisions);
+    duration = (clock() - start)/(double) CLOCKS_PER_SEC;
+}
 // END SHELL SORT
 ////////////////////////////////////////
 ////////////////////////////////////////
@@ -423,14 +473,36 @@ int number_of_element[] = {10000, 30000, 50000, 100000, 300000, 500000};
 int main () {
     int arr[500000];
     int n = 10;
+
     unsigned long long count;
     double duration;
     cout << "comparisons,duration" << endl;
     for (int i = 0; i < 6; i++) {
         n = number_of_element[i];
         GenerateRandomData(arr, n);
+        cout << "Heap: ";
         heapSort_counting(arr, n, count, duration);
         cout << count << "," << duration << endl;
     }
+
+    /* unsigned long long count2;
+    double duration2;
+    for (int i = 0; i < 6; i++) {
+        n = number_of_element[i];
+        GenerateRandomData(arr, n);
+        cout << "Insert: ";
+        insertion_sort_counting(arr, n, count2, duration2);
+        cout << count2 << "," << duration2 << endl;
+    } */
+
+    /* unsigned long long count3;
+    double duration3;
+    for (int i = 0; i < 6; i++) {
+        n = number_of_element[i];
+        GenerateRandomData(arr, n);
+        cout << "Shell: ";
+        shellsort_counting(arr, n, count3, duration3);
+        cout << count3 << "," << duration3 << endl;
+    } */
     return 0;
 }
