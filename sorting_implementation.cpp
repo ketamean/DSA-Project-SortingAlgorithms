@@ -35,7 +35,30 @@ void selectionSort_counting(int arr[], int n, int &comparisions, double &duratio
 ///////////////////////////////////////
 ////////////////////////////////////////
 // BUBBLE SORT
-
+// src: https://www.geeksforgeeks.org/bubble-sort/
+void bubbleSort_counting(int arr[], int n, unsigned long long &comparisions, double &duration) {
+    comparisions = 0;
+    duration = 0;
+    int i = 0;
+    bool swapped;
+    double start = clock(); // get starting time
+    while (++comparisions && i < n - 1) {
+        swapped = false;
+        int j = 0;
+        while (++comparisions && j < n - i - 1) {
+            if (++comparisions && arr[j] > arr[j + 1]) {
+                swapped = true;
+                swap(arr[j], arr[j + 1]);
+            }
+            j++;
+        }
+        if (swapped == false) {
+            break;
+        }
+        i++;
+    }
+    duration = (clock() - start)/(double)CLOCKS_PER_SEC;
+}
 // END BUBBLE SORT
 ////////////////////////////////////////
 ////////////////////////////////////////
@@ -59,7 +82,38 @@ void selectionSort_counting(int arr[], int n, int &comparisions, double &duratio
 ///////////////////////////////////////
 ////////////////////////////////////////
 // HEAP SORT
+/// @param pos the position at which we start to build the heap
+void heap_rebuild(int a[], int n, int pos, unsigned long long &comparisons) {
+    bool is_heap = false;
+    int k;
+    while (is_heap == false && ++comparisons && 2*pos + 1 < n) {
+        k = 2*pos + 1;
+        if (++comparisons && k < n - 1 && ++comparisons && a[k] < a[k + 1]) k = k + 1;
+        if (++comparisons && a[k] > a[pos]) {
+            swap(a[k], a[pos]);
+            k = pos;
+        } else is_heap = true;
+    }
+}
+void heap_construction(int a[], int n, unsigned long long &comparisons) {
+    for (int i = n/2 - 1; ++comparisons && i >= 0; --i) {
+        heap_rebuild(a, n, i, comparisons);
+    }
+}
 
+void heapSort_counting(int a[], int n, unsigned long long &comparisons, double &duration) {
+    comparisons = 0;
+    duration = 0;
+    double start = clock();
+    heap_construction(a, n, comparisons);
+    unsigned int sorted_part = n - 1;
+    while (++comparisons && sorted_part > 0) {
+        swap(a[0], a[sorted_part]);
+        heap_rebuild(a, sorted_part, 0, comparisons);
+        sorted_part--;
+    }
+    duration = (clock() - start)/(double) CLOCKS_PER_SEC;
+}
 // END HEAP SORT
 ////////////////////////////////////////
 ////////////////////////////////////////
@@ -111,7 +165,7 @@ int partition(int arr[], int start, int end)
     return pivotIndex;
 }
  
-void quickSort(int arr[], int start, int end, int &comparisons)
+void quickSort(int arr[], int start, int end, unsigned long long &comparisons)
 { 
     // base case
     if (++comparisons && start >= end)
@@ -127,7 +181,7 @@ void quickSort(int arr[], int start, int end, int &comparisons)
     quickSort(arr, p + 1, end, comparisons);
 }
 
-void quickSort_counting(int arr[], int n, int &comparisons, double &duration)
+void quickSort_counting(int arr[], int n, unsigned long long &comparisons, double &duration)
 {
     double start = clock(); //get current time
     quickSort(arr, 0, n - 1, comparisons);
@@ -263,3 +317,20 @@ void flashSort_counting(int arr[], int n, int &comparisons, double &duration)
 // END FLASH SORT
 ////////////////////////////////////////
 ////////////////////////////////////////
+
+// main for debugging
+int number_of_element[] = {10000, 30000, 50000, 100000, 300000, 500000};
+int main () {
+    int arr[500000];
+    int n = 10;
+    unsigned long long count;
+    double duration;
+    cout << "comparisons,duration" << endl;
+    for (int i = 0; i < 6; i++) {
+        n = number_of_element[i];
+        GenerateRandomData(arr, n);
+        heapSort_counting(arr, n, count, duration);
+        cout << count << "," << duration << endl;
+    }
+    return 0;
+}
