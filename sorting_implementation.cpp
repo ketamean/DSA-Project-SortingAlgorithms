@@ -1,8 +1,8 @@
-/* //#include "DataGenerator.cpp"
+#include "DataGenerator.cpp"
 ///////////////////////////////////////
 ////////////////////////////////////////
 // SELECTION SORT
-void selectionSort_counting(int arr[], int n, int &comparisions, double &duration) {
+void selectionSort_counting(int arr[], int n, unsigned long long &comparisions, double &duration) {
     double start = clock(); //get current time
     
     for (int i = 0; i < n; i++) {
@@ -18,7 +18,6 @@ void selectionSort_counting(int arr[], int n, int &comparisions, double &duratio
         swap(arr[i], arr[minIndex]);
     }
     duration = (clock() - start)/(double) CLOCKS_PER_SEC;
-    cout << "Operation took: " << duration << "secs." << endl;
 }
 // END SELECTION SORT
 ////////////////////////////////////////
@@ -63,10 +62,44 @@ void bubbleSort_counting(int arr[], int n, unsigned long long &comparisions, dou
 ////////////////////////////////////////
 ////////////////////////////////////////
 
-///////////////////////////////////////
+////////////////////////////////////////
 ////////////////////////////////////////
 // SHAKER SORT
+void shakerSort_counting(int arr[], int n, unsigned long long &comparisions, double &duration) {
+    double start = clock();
+    bool swapped = true;
+    int begin = 0, end = n - 1;
 
+    while (swapped) {
+        ++comparisions;
+        //set swap = false
+        swapped = false;
+
+        //loop from left to right
+        for (int i = begin; ++comparisions && i < end; ++i) {
+            if (++comparisions && arr[i] > arr[i+1]) {
+                swap(arr[i], arr[i+1]);
+                swapped = true;
+            }
+        }
+
+        //if the arr is already sorted, end loop
+        if (!swapped) break;
+
+        end--;
+
+        //loop from right to left w same comparisions
+        for (int i = end - 1; ++comparisions && i >= begin; --i) {
+            if (++comparisions && arr[i] >= arr[i+1]) {
+                swap(arr[i], arr[i+1]);
+                swapped = true;
+            }
+        }
+        //increase the starting point
+        ++begin;
+    }
+    duration = (clock() - start)/(double)CLOCKS_PER_SEC;
+}
 // END SHAKER SORT
 ////////////////////////////////////////
 ////////////////////////////////////////
@@ -118,10 +151,77 @@ void heapSort_counting(int a[], int n, unsigned long long &comparisons, double &
 ////////////////////////////////////////
 ////////////////////////////////////////
 
-///////////////////////////////////////
+////////////////////////////////////////
 ////////////////////////////////////////
 // MERGE SORT
 
+//func to merge two subarrays
+void mergeSort_merge (int arr[], int const left, int const mid, int const right, unsigned long long &comparisions) {
+    int const subArr1 = mid - left + 1;
+    int const subArr2 = right - mid;
+
+    int *leftArr = new int[subArr1]; //first tmp arrays
+    int *rightArr = new int[subArr2]; //second tmp arrays
+
+    //Copy data to tmp arr
+    for (int i = 0; ++comparisions && i < subArr1; i++)
+        leftArr[i] = arr[left + i];
+    for (int j = 0; ++comparisions && j < subArr2; j++)
+        rightArr[j] = arr[mid + 1 + j];
+    
+    int subArr1Index = 0, subArr2Index = 0;
+    int mergeArrIndex = left;
+
+    //merge the tmp arrays back into array
+    while (++comparisions && subArr1Index < subArr1 && subArr2Index < subArr2) {
+        if (++comparisions && leftArr[subArr1Index] < rightArr[subArr2Index]) {
+            arr[mergeArrIndex] = leftArr[subArr1Index];
+            subArr1Index++;
+        } else {
+            arr[mergeArrIndex] = rightArr[subArr2Index];
+            subArr2Index++;
+        }
+        mergeArrIndex++;
+    }
+
+    //Copy the remaining elements
+    while (++comparisions && subArr1Index < subArr1) {
+        arr[mergeArrIndex] = leftArr[subArr1Index];
+        subArr1Index++;
+        mergeArrIndex++;
+    }
+
+    while (++comparisions && subArr2Index < subArr2) {
+        arr[mergeArrIndex] = rightArr[subArr2Index];
+        subArr2Index++;
+        mergeArrIndex++;
+    }
+
+    delete[] leftArr;
+    delete[] rightArr;
+}
+
+//function to divide arr
+//begin = left index, end = right index of the sub-array of arr to be sorted
+void mergeSort_divide(int arr[], unsigned long long &comparisions, int const begin, int const end) {
+    if (begin >= end) {
+        comparisions++;
+        return;
+    }
+
+    int mid = begin + (end - begin) / 2;
+    comparisions++;
+    mergeSort_divide(arr, comparisions, begin, mid);
+    mergeSort_divide(arr, comparisions, mid + 1, end);
+    mergeSort_merge(arr, begin, mid, end, comparisions);
+}
+
+void mergeSort_counting(int arr[], int n, unsigned long long &comparision, double &duration) {
+    double start = clock(); //get current time
+
+    mergeSort_divide(arr, comparision, 0, n - 1);
+    duration = (clock() - start)/(double) CLOCKS_PER_SEC;
+}
 // END MERGE SORT
 ////////////////////////////////////////
 ////////////////////////////////////////
