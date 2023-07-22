@@ -17,11 +17,12 @@ enum SORTING_ALGORITHM {
 // SELECTION SORT
 void selectionSort_counting(int arr[], int n, unsigned long long &comparisions, double &duration) {
     double start = clock(); //get current time
+    comparisions = 0;
     
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; ++comparisions && i < n; i++) {
         int minIndex = i, minVal = arr[i];
 
-        for (int j = i + 1; j < n; j++) {
+        for (int j = i + 1; ++comparisions && j < n; j++) {
             if (++comparisions && arr[j] < minVal) {
                 minVal = arr[j];
                 minIndex = j;
@@ -104,9 +105,9 @@ void shakerSort_counting(int arr[], int n, unsigned long long &comparisions, dou
     double start = clock();
     bool swapped = true;
     int begin = 0, end = n - 1;
+    comparisions = 0;
 
-    while (swapped) {
-        ++comparisions;
+    while (++comparisions && swapped) {
         //set swap = false
         swapped = false;
 
@@ -119,7 +120,7 @@ void shakerSort_counting(int arr[], int n, unsigned long long &comparisions, dou
         }
 
         //if the arr is already sorted, end loop
-        if (!swapped) break;
+        if (++comparisions && !swapped) break;
 
         end--;
 
@@ -275,12 +276,14 @@ void mergeSort_divide(int arr[], unsigned long long &comparisions, int const beg
     int mid = begin + (end - begin) / 2;
     comparisions++;
     mergeSort_divide(arr, comparisions, begin, mid);
+    comparisions++;
     mergeSort_divide(arr, comparisions, mid + 1, end);
     mergeSort_merge(arr, begin, mid, end, comparisions);
 }
 
 void mergeSort_counting(int arr[], int n, unsigned long long &comparision, double &duration) {
     double start = clock(); //get current time
+    comparision = 0;
 
     mergeSort_divide(arr, comparision, 0, n - 1);
     duration = (clock() - start)/(double) CLOCKS_PER_SEC;
