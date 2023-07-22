@@ -240,13 +240,10 @@ bool Command2(vector<string> str_argv)
     int* arr = new int[n];
     cout << "ALGORITHM MODE\n"
             << "Algorithm:: " << str_argv[2] << endl
-            << "Input size: " << n << endl
-            << "Input order: " << NameORDER << endl;
-
+            << "Input size: " << n << endl;
 
     GenerateData(arr,n, ORDER);
     Sort(arr, n, comparisons, duration, ALGO);
-    cout << "done sort";
     printResultAlgoMode(NameORDER, PARAM, duration, comparisons);
     delete []arr;
     return true;
