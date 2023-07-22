@@ -175,207 +175,27 @@ void printResultAlgoMode(string Order, Parameter param, double duration, unsigne
 
 bool  Command1(vector<string> str_argv)
 {
-    int n; //n is number of element
-    int *arr;
-    
-    unsigned long long comparisons;
-    double duration;
-    ALGORITHM ALGO = getALGORITHM(str_argv[2]);
-    Parameter PARAM = getParameter(str_argv[4]);
-    if(ALGO == Wrong_CMD_ALGO || PARAM == Wrong_CMD_Param) 
-    {
-        cout << "name algorithm or output parameter is not correct.";
-        return 0;
-    }
-    if(readfile(str_argv[3], arr, n) == false)
-    {
-        cout << "file is not in the correct form!";
-        return 0;
-    }
-        
-    cout << "ALGORITHM MODE" << endl
-            << "Algorithm:: " << str_argv[2] << endl
-            << "Input file: " << str_argv[3] << endl
-            << "Input size: " << n << endl;
-    Sort(arr, n, comparisons, duration, ALGO);
-    if(PARAM == Time)
-        cout << "Runing time: " << duration << endl;
-    else if(PARAM == Comp)
-        cout << "Comparisons: " << comparisons << endl;
-    else if(PARAM == Both)
-    {
-        cout << "Runing time: " << duration << endl;
-        cout << "Comparisons: " << comparisons << endl;
-    }
-    cout << endl;
-    return true;
+
 }
 
 bool Command2(vector<string> str_argv)
 {
-    unsigned long long comparisons;
-    double duration;
-    //Comman 2: on the data generated automatically with specified size and order.
-    //file.exe -a algorithm_1 size order -both
-    ALGORITHM ALGO = getALGORITHM(str_argv[2]);
-    string NameORDER;
-    Parameter PARAM = getParameter(str_argv[5]);
-    int ORDER = getORDER(str_argv[4], NameORDER);
-    if(ALGO == Wrong_CMD_ALGO || PARAM == Wrong_CMD_Param) 
-    {
-        cout << "name algorithm or output parameter is not correct.";
-        return 0;
-    }
-    if(ORDER == 4)
-    {
-        cout << "name algorithm or output parameter is not correct.";
-        return 0;
-    }
-    if(isNumber(str_argv[3]) == false)
-    {
-        cout << "size isn't number.";
-        return 0;
-    }
-    int n = stoull(str_argv[3]);
-    int* arr = new int[n];
-    cout << "ALGORITHM MODE\n"
-            << "Algorithm:: " << str_argv[2] << endl
-            << "Input size: " << n << endl
-            << "Input order: " << NameORDER << endl;
 
-
-    GenerateData(arr,n, ORDER);
-    Sort(arr, n, comparisons, duration, ALGO);
-    cout << "done sort";
-    printResultAlgoMode(NameORDER, PARAM, duration, comparisons);
-    delete []arr;
-    return true;
 }
 
 bool Command3(vector<string> str_argv)
 {
-    int n; //n is number of element
-    int *arr;
-    unsigned long long comparisons;
-    double duration;
-    ALGORITHM ALGO = getALGORITHM(str_argv[2]);
-    Parameter PARAM = getParameter(str_argv[4]);
-    if(ALGO == Wrong_CMD_ALGO || PARAM == Wrong_CMD_Param) 
-    {
-        cout << "name algorithm or output parameter is not correct.";
-        return false;
-    }
 
-    if(isNumber(str_argv[3]) == false)
-    {
-        cout << "size isn't number.";
-        return false;
-    }
-    n = stoi(str_argv[3]);
-    arr = new int[n];
-    cout << "ALGORITHM MODE\n"
-            << "Algorithm:: " << str_argv[2] << endl
-            << "Input size: " << stoi(str_argv[3]) << endl << endl;
-
-    GenerateRandomData(arr,n);
-    Sort(arr, n, comparisons, duration, ALGO);
-    printResultAlgoMode("Randomize", PARAM, duration, comparisons);
-
-    GenerateNearlySortedData(arr,n);
-    Sort(arr, n, comparisons, duration, ALGO);
-    printResultAlgoMode("Nearly Sorted", PARAM, duration, comparisons);
-
-    GenerateSortedData(arr,n);
-    Sort(arr, n, comparisons, duration, ALGO);
-    printResultAlgoMode("Sorted",PARAM, duration, comparisons);
-
-    GenerateReverseData(arr,n);
-    Sort(arr, n, comparisons, duration, ALGO);
-    printResultAlgoMode("Reversed", PARAM, duration, comparisons);
-    delete []arr;
-    return true;
 }
 
 bool Command4(vector<string> str_argv)
 {
-    int* arr;
-    int n;
-    unsigned long long comparisons1, comparisons2;
-    double duration1, duration2;
-    ALGORITHM ALGO1 = getALGORITHM(str_argv[2]),
-                ALGO2 = getALGORITHM(str_argv[3]);
-    if(ALGO1 == Wrong_CMD_ALGO || ALGO2 == Wrong_CMD_ALGO)
-    {
-        cout << "name algorithm or output parameter is not correct.";
-        return 0;
-    }
 
-    if(readfile(str_argv[4], arr, n) == false)
-    {
-        cout << "file is not in the correct form!";
-        return 0;
-    }
-    Sort(arr, n, comparisons1, duration1, ALGO1);
-    readfile(str_argv[4], arr, n);
-    Sort(arr, n, comparisons2, duration2, ALGO2);
-    delete []arr;
-
-    cout << "COMPARE MODE\n"
-         << "Algorithm:: " << str_argv[2] << " | " << str_argv[3] << endl
-         << "Input file: " << str_argv[4] << endl
-         << "Input size: " << n << endl 
-         << "--------------------------------------------\n"
-         << "Running time: " << duration1 << " | " << duration2 << endl
-         << "Comparisons:  " << comparisons1 << " | " << comparisons2 << endl;
-    return 1;
 }
 
 bool Command5(vector<string> str_argv)
 {
-    //Command 5: Two sorting algorithms on the data generated automatically.
-    //file.exe -c algorithm_1 algorithm_2 size order
-    unsigned long long comparisons1, comparisons2;
-    double duration1, duration2;
-    ALGORITHM ALGO1 = getALGORITHM(str_argv[2]),
-                ALGO2 = getALGORITHM(str_argv[3]);
-    string NameORDER;
-    int ORDER = getORDER(str_argv[5], NameORDER);
-    if(ALGO1 == Wrong_CMD_ALGO || ALGO2 == Wrong_CMD_ALGO)
-    {
-        cout << "name algorithm or output parameter is not correct.";
-        return 0;
-    }
-    if(ORDER == 4)
-    {
-        cout << "output parameter is not correct.";
-        return 0;
-    }
-    if(isNumber(str_argv[4]) == false)
-    {
-        cout << "size is not number";
-        return 0;
-    }
-    int n = stoi(str_argv[4]);
-    int* arr = new int[n];
-    int* arr_copy = new int [n];
-    GenerateData(arr, n, ORDER);
-    for(int i = 0; i < n; i++)
-        arr_copy[i] = arr[i];
 
-    Sort(arr, n, comparisons1, duration1, ALGO1);
-    Sort(arr_copy, n, comparisons2, duration2, ALGO2);
-    cout << "sort xong";
-    delete []arr;
-    delete []arr_copy;
-    
-    cout << "COMPARE MODE\n"
-            << "Algorithm:: " << str_argv[2] << " | " << str_argv[3] << endl
-            << "Input size: " << n << endl 
-            << "Input order: " << NameORDER << endl
-            << "--------------------------------------------\n"
-            << "Running time: " << duration1 << " | " << duration2 << endl
-            << "Comparisons:  " << comparisons1 << " | " << comparisons2 << endl;
-    return true;
 }
 
 void getTASK(int argc,vector<string> str_argv)
