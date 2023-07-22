@@ -1,8 +1,9 @@
+#pragma once
 #include "DataGenerator.cpp"
 ///////////////////////////////////////
 ////////////////////////////////////////
 // SELECTION SORT
-void selectionSort_counting(int arr[], int n, int &comparisions, double &duration) {
+void selectionSort_counting(int arr[], int n, unsigned long long &comparisions, double &duration) {
     double start = clock(); //get current time
     
     for (int i = 0; i < n; i++) {
@@ -111,7 +112,7 @@ int partition(int arr[], int start, int end)
     return pivotIndex;
 }
  
-void quickSort(int arr[], int start, int end, int &comparisons)
+void quickSort(int arr[], int start, int end, unsigned long long &comparisons)
 { 
     // base case
     if (++comparisons && start >= end)
@@ -127,12 +128,15 @@ void quickSort(int arr[], int start, int end, int &comparisons)
     quickSort(arr, p + 1, end, comparisons);
 }
 
-void quickSort_counting(int arr[], int n, int &comparisons, double &duration)
+void quickSort_counting(int arr[], int n, unsigned long long &comparisons, double &duration)
 {
+    comparisons = 0;
     double start = clock(); //get current time
     quickSort(arr, 0, n - 1, comparisons);
     duration = (clock() - start)/(double) CLOCKS_PER_SEC;
 }
+
+//reference: https://www.studocu.com/vn/document/truong-dai-hoc-su-pham-ky-thuat-thanh-pho-ho-chi-minh/computer-architecture-and-assembly-language/flash-sort/60588066
 
 // END QUICK SORT
 ////////////////////////////////////////
@@ -157,7 +161,7 @@ void quickSort_counting(int arr[], int n, int &comparisons, double &duration)
 ///////////////////////////////////////
 ////////////////////////////////////////
 // FLASH SORT
-void InsertionSort(int *arr, int n, int &comparisons)
+void InsertionSort(int *arr, int n, unsigned long long &comparisons)
 {
     int value_i, pos;
     for(int i = 1;(++comparisons) && i < n ; i++)
@@ -177,7 +181,7 @@ void InsertionSort(int *arr, int n, int &comparisons)
     }
 }
 
-void Flashsort(int *arr, int n, int &comparisons)
+void Flashsort(int *arr, int n, unsigned long long &comparisons)
 {
     double start = clock(); //get current time
 
@@ -254,8 +258,9 @@ void Flashsort(int *arr, int n, int &comparisons)
     InsertionSort(arr,n, comparisons);
 }
 
-void flashSort_counting(int arr[], int n, int &comparisons, double &duration)
+void flashSort_counting(int arr[], int n, unsigned long long &comparisons, double &duration)
 {
+    comparisons = 0;
     double start = clock(); //get current time
     Flashsort(arr, n, comparisons);
     duration = (clock() - start)/(double) CLOCKS_PER_SEC;
@@ -263,3 +268,16 @@ void flashSort_counting(int arr[], int n, int &comparisons, double &duration)
 // END FLASH SORT
 ////////////////////////////////////////
 ////////////////////////////////////////
+
+// int main()
+// {
+//     int a[10] = {1,42,45,12,34,23,235,23,12,3123};
+//     int comparisons;
+//     double duration;
+//     quickSort_counting(a, 10, comparisons, duration);
+//     for(int i = 0; i < 10; i++)
+//     {
+//         cout << a[i] << " ";
+//     }
+//     return 0;
+// }
