@@ -1,4 +1,17 @@
 #include "DataGenerator.cpp"
+enum SORTING_ALGORITHM {
+    SELECTION_SORT,
+    INSERTION_SORT,
+    BUBBLE_SORT,
+    HEAP_SORT,
+    MERGE_SORT,
+    QUICK_SORT,
+    RADIX_SORT,
+    SHAKER_SORT,
+    SHELL_SORT,
+    COUNTING_SORT,
+    FLASH_SORT
+};
 ///////////////////////////////////////
 ////////////////////////////////////////
 // SELECTION SORT
@@ -151,7 +164,7 @@ void shellsort(int arr[], int n, unsigned long long &comparisions) {
     return;
 }
 
-void shellsort_counting(int arr[], int n, unsigned long long &comparisions, double &duration) {
+void shellSort_counting(int arr[], int n, unsigned long long &comparisions, double &duration) {
     comparisions = 0;
     duration = 0;
     double start = clock(); //get current time
@@ -345,7 +358,9 @@ void quickSort_counting(int arr[], int n, unsigned long long &comparisons, doubl
 ///////////////////////////////////////
 ////////////////////////////////////////
 // COUNTING SORT
+void countingSort_counting(int a[], int n, unsigned long long &comparisons, double &duration) {
 
+}
 // END COUNTING SORT
 ////////////////////////////////////////
 ////////////////////////////////////////
@@ -353,7 +368,9 @@ void quickSort_counting(int arr[], int n, unsigned long long &comparisons, doubl
 ///////////////////////////////////////
 ////////////////////////////////////////
 // RADIX SORT
-
+void radixSort_counting(int a[], int n, unsigned long long &comparisons, double &duration) {
+    comparisons = 0;
+}
 // END RADIX SORT
 ////////////////////////////////////////
 ////////////////////////////////////////
@@ -361,7 +378,7 @@ void quickSort_counting(int arr[], int n, unsigned long long &comparisons, doubl
 ///////////////////////////////////////
 ////////////////////////////////////////
 // FLASH SORT
-void InsertionSort(int *arr, int n, int &comparisons)
+void InsertionSort(int *arr, int n, unsigned long long &comparisons)
 {
     int value_i, pos;
     for(int i = 1;(++comparisons) && i < n ; i++)
@@ -381,7 +398,7 @@ void InsertionSort(int *arr, int n, int &comparisons)
     }
 }
 
-void Flashsort(int *arr, int n, int &comparisons)
+void Flashsort(int *arr, int n, unsigned long long &comparisons)
 {
     double start = clock(); //get current time
 
@@ -458,7 +475,7 @@ void Flashsort(int *arr, int n, int &comparisons)
     InsertionSort(arr,n, comparisons);
 }
 
-void flashSort_counting(int arr[], int n, int &comparisons, double &duration)
+void flashSort_counting(int arr[], int n, unsigned long long &comparisons, double &duration)
 {
     double start = clock(); //get current time
     Flashsort(arr, n, comparisons);
