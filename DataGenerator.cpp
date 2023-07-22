@@ -1,7 +1,4 @@
-﻿#include <iostream>
-#include <fstream>
-#include <cmath>
-#include <time.h>
+﻿#include "Library.h"
 using namespace std;
 
 template <class T>
