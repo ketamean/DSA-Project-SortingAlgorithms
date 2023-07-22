@@ -1,3 +1,4 @@
+#pragma once
 #include "DataGenerator.cpp"
 enum SORTING_ALGORITHM {
     SELECTION_SORT,
@@ -348,10 +349,13 @@ void quickSort(int arr[], int start, int end, unsigned long long &comparisons)
 
 void quickSort_counting(int arr[], int n, unsigned long long &comparisons, double &duration)
 {
+    comparisons = 0;
     double start = clock(); //get current time
     quickSort(arr, 0, n - 1, comparisons);
     duration = (clock() - start)/(double) CLOCKS_PER_SEC;
 }
+
+//reference: https://www.studocu.com/vn/document/truong-dai-hoc-su-pham-ky-thuat-thanh-pho-ho-chi-minh/computer-architecture-and-assembly-language/flash-sort/60588066
 
 // END QUICK SORT
 ////////////////////////////////////////
@@ -521,6 +525,7 @@ void Flashsort(int *arr, int n, unsigned long long &comparisons)
 
 void flashSort_counting(int arr[], int n, unsigned long long &comparisons, double &duration)
 {
+    comparisons = 0;
     double start = clock(); //get current time
     Flashsort(arr, n, comparisons);
     duration = (clock() - start)/(double) CLOCKS_PER_SEC;
