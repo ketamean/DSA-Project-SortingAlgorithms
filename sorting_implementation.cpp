@@ -1,18 +1,18 @@
 #pragma once
 #include "DataGenerator.cpp"
-enum SORTING_ALGORITHM {
-    SELECTION_SORT,
-    INSERTION_SORT,
-    BUBBLE_SORT,
-    HEAP_SORT,
-    MERGE_SORT,
-    QUICK_SORT,
-    RADIX_SORT,
-    SHAKER_SORT,
-    SHELL_SORT,
-    COUNTING_SORT,
-    FLASH_SORT
-};
+// enum SORTING_ALGORITHM {
+//     SELECTION_SORT,
+//     INSERTION_SORT,
+//     BUBBLE_SORT,
+//     HEAP_SORT,
+//     MERGE_SORT,
+//     QUICK_SORT,
+//     RADIX_SORT,
+//     SHAKER_SORT,
+//     SHELL_SORT,
+//     COUNTING_SORT,
+//     FLASH_SORT
+// };
 ///////////////////////////////////////
 ////////////////////////////////////////
 // SELECTION SORT

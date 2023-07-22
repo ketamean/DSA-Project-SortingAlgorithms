@@ -4,6 +4,21 @@ using namespace std;
 
 #define DEBUG 0
 
+void (*sort[11])(int*, int, unsigned long long&, double&) = 
+    {
+        selectionSort_counting,
+        insertion_sort_counting,
+        bubbleSort_counting,
+        shakerSort_counting,
+        shellSort_counting,
+        heapSort_counting,
+        mergeSort_counting,
+        quickSort_counting,
+        countingSort_counting,
+        radixSort_counting,
+        flashSort_counting
+    };
+
 enum ALGORITHM
 {
     Selection,
@@ -35,19 +50,53 @@ bool isNumber(string n)
     return true;    
 }
 
-ALGORITHM getALGORITHM(string algo)
+ALGORITHM getALGORITHM(string algo, string &name_of_algorithm)
 {
-    if(algo == "selection-sort") return Selection;
-    if(algo == "insertion-sort") return Insertion;
-    if(algo == "bubble-sort") return Bubble;
-    if(algo == "shaker-sort") return Shaker;
-    if(algo == "shell-sort") return Shell;
-    if(algo == "heap-sort") return Heap;
-    if(algo == "merge-sort") return Merge;
-    if(algo == "quick-sort") return Quick;
-    if(algo == "couting-sort") return Counting;
-    if(algo == "radix-sort") return Radix;
-    if(algo == "flash-sort") return Flash;
+    if(algo == "selection-sort") {
+        name_of_algorithm = "Selection Sort";
+        return Selection;
+    }
+    if(algo == "insertion-sort") {
+        name_of_algorithm = "Insertion Sort";
+        return Insertion;
+    }
+    if(algo == "bubble-sort") {
+        name_of_algorithm = "Bubble Sort";
+        return Bubble;
+    }
+    if(algo == "shaker-sort") {
+        name_of_algorithm = "Shaker Sort";
+        return Shaker;
+    }
+    if(algo == "shell-sort") {
+        name_of_algorithm = "Shell Sort";
+        return Shell;
+    }
+    if(algo == "heap-sort") {
+        name_of_algorithm = "Heap Sort";
+        return Heap;
+    }
+    if(algo == "merge-sort") {
+        name_of_algorithm = "Merge Sort";
+        return Merge;
+    }
+    if(algo == "quick-sort") {
+        name_of_algorithm = "Quick Sort";
+        return Quick;
+    }
+    if(algo == "couting-sort") {
+        name_of_algorithm = "Counting Sort";
+        return Counting;
+    }
+    if(algo == "radix-sort") {
+        name_of_algorithm = "Radix Sort";
+        return Radix;
+    }
+    if(algo == "flash-sort") {
+        name_of_algorithm = "Flash Sort";
+        return Flash;
+    }
+    name_of_algorithm = "";
     return Wrong_CMD_ALGO;
 }
 
@@ -63,7 +112,7 @@ int getORDER(string order, string& nameOrder)
 {
     if(order == "-rand")
     {
-        nameOrder = "Randomize";
+        nameOrder = "Randomized";
         return 0;
     } 
     if(order == "-nsorted")
@@ -83,51 +132,6 @@ int getORDER(string order, string& nameOrder)
     }
     nameOrder = "Wrong_CMD";
     return 4;
-}
-
-void Sort(int *&arr, int n, unsigned long long &comparisonss, double &duration, ALGORITHM Algo)
-{
-    switch (Algo)
-    {
-    case Selection:
-        //Call Selection sort:
-        break;
-    case Insertion:
-        //Call Insertion sort:
-        break;
-    case Bubble:
-        //Call Bubble sort:
-        break;
-    case Shaker:
-        //Call Shaker sort:
-        break;
-    case Shell:
-        //Call Shell sort:
-        break;
-    case Heap:
-        heapSort_counting(arr, n, comparisonss, duration);
-        //Call Heap sort:
-        break;
-    case Merge:
-        //Call Merge sort:
-        break;
-    case Quick:
-        quickSort_counting(arr, n, comparisonss, duration);
-        //Call Quick sort:
-        break;
-    case Counting:
-        //Call Counting sort:
-        break;
-    case Radix:
-        //Call Radix sort:
-        break;
-    case Flash:
-        //Call Flash sort:
-        flashSort_counting(arr, n, comparisonss, duration);
-        break;
-    default:
-        break;
-    }
 }
 
 bool readfile(string filename, int* &arr, int &n)
@@ -194,8 +198,42 @@ bool Command4(vector<string> str_argv)
 }
 
 bool Command5(vector<string> str_argv)
-{
+{   
+    // 2 strings which contains the display styles of 2 sorting algorithms
+    string name_algo_1, name_algo_2;
+    // get 2 algorithms user wants to compare
+    ALGORITHM algorithm_1 = getALGORITHM(str_argv[2], name_algo_1);
+    ALGORITHM algorithm_2 = getALGORITHM(str_argv[3], name_algo_2);
 
+    // get data order
+    string str_data_order;
+    int int_data_order = getORDER(str_argv[5], str_data_order);
+
+    // prepare input for sorting functions
+    int n = stoi(str_argv[4]);
+    int* arr = new int[n];
+    unsigned long long comparisons_algorithm_1, comparisons_algorithm_2;
+    double duration_algorithm_1, duration_algorithm_2;
+
+    // count the 1st algorithm
+    GenerateData(arr, n, int_data_order);
+    sort[algorithm_1](arr, n, comparisons_algorithm_1, duration_algorithm_1);
+
+    // count the 2nd algorithm
+    GenerateData(arr, n, int_data_order);
+    sort[algorithm_2](arr, n, comparisons_algorithm_2, duration_algorithm_2);
+
+    // display result
+    cout << "COMPARE MODE\n"
+         << "Algorithm: " << name_algo_1 << " | " << name_algo_2 << endl
+         << "Input size: " << n << endl
+         << "Input order: " << str_data_order << endl
+         << "-------------------------" << endl
+         << "Running time: " << duration_algorithm_1 << " | " << duration_algorithm_2 << endl
+         << "Comparisons: " << comparisons_algorithm_1 << " | " << comparisons_algorithm_2 << endl;
+
+    delete[] arr;
+    return 1;
 }
 
 void getTASK(int argc,vector<string> str_argv)
