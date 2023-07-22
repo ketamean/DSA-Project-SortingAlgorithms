@@ -115,11 +115,6 @@ int getORDER(string order, string& nameOrder)
         nameOrder = "Randomized";
         return 0;
     } 
-    if(order == "-nsorted")
-    {
-        nameOrder =  "Nearly Sorted";
-        return 3;
-    } 
     if(order == "-sorted") 
     {
         nameOrder = "Sorted";
@@ -130,6 +125,11 @@ int getORDER(string order, string& nameOrder)
         nameOrder = "Reversed";
         return 2;
     }
+    if(order == "-nsorted")
+    {
+        nameOrder =  "Nearly Sorted";
+        return 3;
+    } 
     nameOrder = "Wrong_CMD";
     return 4;
 }
@@ -189,7 +189,48 @@ bool Command2(vector<string> str_argv)
 
 bool Command3(vector<string> str_argv)
 {
+    //get the algorithm name and input size
+    string algorithmName;
+    ALGORITHM algorithm = getALGORITHM(str_argv[2], algorithmName);
+    int inputSize = stoi(str_argv[3]);
 
+    //prep input for sorting func
+    int *arr = new int[inputSize];
+    unsigned long long comparisions;
+    double duration;
+
+    //display header for the algorithm mode
+    cout << "ALGORITHM MODE\n";
+    cout << "Algorithm: " << algorithmName << endl;
+    cout << "Input size: " << inputSize << endl << endl;
+
+    vector<string> orderInput = {"-rand", "-sorted", "-rev", "-nsorted"};
+    //run the algorithm on generated data
+    for (int order = 0; order < 4; order++) {
+        //generate data with the specified order
+        string orderName; //get the orderName ()
+        GenerateData(arr, inputSize, order);
+        getORDER(orderInput[order], orderName);
+
+        //run the sorting algorithm
+        sort[algorithm](arr, inputSize, comparisions, duration);
+        Parameter parameter = getParameter(str_argv[4]);
+
+        //display the result
+        cout << "Input order: " << orderName << endl << "-------------------------" << endl;
+        if (parameter == Comp) {
+            cout << "Comparisions: " << comparisions << endl;
+        } else if (parameter == Time) {
+            cout << "Running time: " << duration << endl;
+        } else {
+            cout << "Running time: " << duration << endl << "Comparisions: " << comparisions << endl;
+        }
+        cout << "-------------------------" << endl << endl;
+    }
+
+    //clean up memory
+    delete[] arr;
+    return 1;
 }
 
 bool Command4(vector<string> str_argv)

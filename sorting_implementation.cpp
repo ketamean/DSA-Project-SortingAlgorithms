@@ -221,6 +221,7 @@ void heapSort_counting(int a[], int n, unsigned long long &comparisons, double &
 // MERGE SORT
 
 //func to merge two subarrays
+//src: https://www.geeksforgeeks.org/merge-sort/
 void mergeSort_merge (int arr[], int const left, int const mid, int const right, unsigned long long &comparisions) {
     int const subArr1 = mid - left + 1;
     int const subArr2 = right - mid;
@@ -269,8 +270,7 @@ void mergeSort_merge (int arr[], int const left, int const mid, int const right,
 //function to divide arr
 //begin = left index, end = right index of the sub-array of arr to be sorted
 void mergeSort_divide(int arr[], unsigned long long &comparisions, int const begin, int const end) {
-    if (begin >= end) {
-        comparisions++;
+    if (comparisions++ && begin >= end) {
         return;
     }
 
