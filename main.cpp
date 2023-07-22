@@ -16,5 +16,6 @@ void (*sorting_counter[11])(int*, int, unsigned long long&, double&) =
     };
 
 int main (int argc, const char* argv[]) {
+    
     return 0;
 }

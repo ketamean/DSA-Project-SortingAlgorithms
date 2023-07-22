@@ -237,7 +237,7 @@ void mergeSort_merge (int arr[], int const left, int const mid, int const right,
     int mergeArrIndex = left;
 
     //merge the tmp arrays back into array
-    while (++comparisions && subArr1Index < subArr1 && subArr2Index < subArr2) {
+    while (++comparisions && subArr1Index < subArr1 && ++comparisions && subArr2Index < subArr2) {
         if (++comparisions && leftArr[subArr1Index] < rightArr[subArr2Index]) {
             arr[mergeArrIndex] = leftArr[subArr1Index];
             subArr1Index++;
@@ -297,7 +297,6 @@ void mergeSort_counting(int arr[], int n, unsigned long long &comparision, doubl
 // QUICK SORT
 int partition(int arr[], int start, int end)
 {
- 
     int pivot = arr[start];
  
     int count = 0;
@@ -361,8 +360,47 @@ void quickSort_counting(int arr[], int n, unsigned long long &comparisons, doubl
 ///////////////////////////////////////
 ////////////////////////////////////////
 // COUNTING SORT
-void countingSort_counting(int a[], int n, unsigned long long &comparisons, double &duration) {
+// src: https://www.geeksforgeeks.org/counting-sort/
+void countingSort(int a[], int n, unsigned long long &comparisons) {
+    // it was guranteed that all a[i] are non-negative integers
+    int i;
 
+    // find max of array `a`
+    int max_element = a[0];
+    for (i = 1; ++comparisons && i < n; ++i) {
+        if (++comparisons && a[i] > max_element) max_element = a[i];
+    }
+
+    int* occurrences = new int[max_element + 1]{0};
+
+    for (i = 0; ++comparisons && i < n; ++i) {
+        occurrences[a[i]]++;
+    }
+
+    // change occurrences[i] so that occurrences[i] now contains actual positions of this character in output array
+    for (i = 1; ++comparisons && i < n; ++i) {
+        occurrences[i] = occurrences[i] + occurrences[i - 1];
+    }
+
+    // build output array
+    int idx = 0;
+    for (i = 0; ++comparisons && i <= max_element && ++comparisons && idx < n;) {
+        if (occurrences[i] != 0) {
+            a[idx] = i;
+            cout << a[idx] << ' ';
+            idx++;
+            occurrences[i]--;
+        } else {
+            i++;
+        }
+    }
+    delete[] occurrences;
+}
+void countingSort_counting(int a[], int n, unsigned long long &comparisons, double &duration) {
+    comparisons = 0;
+    double start = clock();
+    countingSort(a, n, comparisons);
+    duration = (clock() - start)/(double)CLOCKS_PER_SEC;
 }
 // END COUNTING SORT
 ////////////////////////////////////////
@@ -371,6 +409,9 @@ void countingSort_counting(int a[], int n, unsigned long long &comparisons, doub
 ///////////////////////////////////////
 ////////////////////////////////////////
 // RADIX SORT
+void radixSort(int a[], int n, unsigned long long &comparisons) {
+    
+}
 void radixSort_counting(int a[], int n, unsigned long long &comparisons, double &duration) {
     comparisons = 0;
 }
@@ -487,42 +528,3 @@ void flashSort_counting(int arr[], int n, unsigned long long &comparisons, doubl
 // END FLASH SORT
 ////////////////////////////////////////
 ////////////////////////////////////////
-
-// main for debugging
-int number_of_element[] = {10000, 30000, 50000, 100000, 300000, 500000};
-int main () {
-    int arr[500000];
-    int n = 10;
-
-    unsigned long long count;
-    double duration;
-    cout << "comparisons,duration" << endl;
-    for (int i = 0; i < 6; i++) {
-        n = number_of_element[i];
-        GenerateRandomData(arr, n);
-        cout << "Heap: ";
-        heapSort_counting(arr, n, count, duration);
-        cout << count << "," << duration << endl;
-    }
-
-    /* unsigned long long count2;
-    double duration2;
-    for (int i = 0; i < 6; i++) {
-        n = number_of_element[i];
-        GenerateRandomData(arr, n);
-        cout << "Insert: ";
-        insertion_sort_counting(arr, n, count2, duration2);
-        cout << count2 << "," << duration2 << endl;
-    } */
-
-    /* unsigned long long count3;
-    double duration3;
-    for (int i = 0; i < 6; i++) {
-        n = number_of_element[i];
-        GenerateRandomData(arr, n);
-        cout << "Shell: ";
-        shellsort_counting(arr, n, count3, duration3);
-        cout << count3 << "," << duration3 << endl;
-    } */
-    return 0;
-}
