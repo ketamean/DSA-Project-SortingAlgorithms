@@ -17,8 +17,9 @@
 ////////////////////////////////////////
 // SELECTION SORT
 void selectionSort_counting(int arr[], int n, unsigned long long &comparisions, double &duration) {
-    double start = clock(); //get current time
     comparisions = 0;
+    duration = 0;
+    double start = clock(); //get current time
     
     for (int i = 0; ++comparisions && i < n; i++) {
         int minIndex = i, minVal = arr[i];
@@ -103,10 +104,11 @@ void bubbleSort_counting(int arr[], int n, unsigned long long &comparisions, dou
 ////////////////////////////////////////
 // SHAKER SORT
 void shakerSort_counting(int arr[], int n, unsigned long long &comparisions, double &duration) {
+    comparisions = 0;
+    duration = 0;
     double start = clock();
     bool swapped = true;
     int begin = 0, end = n - 1;
-    comparisions = 0;
 
     while (++comparisions && swapped) {
         //set swap = false
@@ -283,8 +285,9 @@ void mergeSort_divide(int arr[], unsigned long long &comparisions, int const beg
 }
 
 void mergeSort_counting(int arr[], int n, unsigned long long &comparision, double &duration) {
-    double start = clock(); //get current time
     comparision = 0;
+    duration = 0;
+    double start = clock(); //get current time
 
     mergeSort_divide(arr, comparision, 0, n - 1);
     duration = (clock() - start)/(double) CLOCKS_PER_SEC;
