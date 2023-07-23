@@ -413,11 +413,61 @@ void countingSort_counting(int a[], int n, unsigned long long &comparisons, doub
 ///////////////////////////////////////
 ////////////////////////////////////////
 // RADIX SORT
-void radixSort(int a[], int n, unsigned long long &comparisons) {
-    
+//https://www.geeksforgeeks.org/radix-sort/
+
+/*-----------Supporting functions-----------*/
+// Getting the max value in arr[]
+int getMax(int arr[], int n, unsigned long long &comparisons)
+{
+    int mx = arr[0];
+    for (int i = 1; ++comparisons && i < n; i++)
+        if (++comparisons && arr[i] > mx)
+            mx = arr[i];
+    return mx;
 }
-void radixSort_counting(int a[], int n, unsigned long long &comparisons, double &duration) {
+
+// Using counting sort of arr[] according to the digit represented by exp.
+void countSort(int arr[], int n, int exp, unsigned long long &comparisons)
+{
+    int output[n]; //Create boxes to store indie values
+    int i, count[10] = {0};
+
+    // Store number of occurrences in count[] for each exp
+    for (i = 0; ++comparisons && i < n; i++)
+        count[(arr[i] / exp) % 10]++;
+
+    // Change count[i] so that it contains actual position of this digit in output[]
+    for (i = 1; ++comparisons && i < 10; i++)
+        count[i] += count[i - 1];
+
+    // Build the output array
+    for (i = n - 1; ++comparisons && i >= 0; i--) {
+        output[count[(arr[i] / exp) % 10] - 1] = arr[i];
+        count[(arr[i] / exp) % 10]--;
+    }
+    // Copy the output array to arr[], so that arr[] now contains sorted numbers according to current digit
+    for (i = 0; ++comparisons && i < n; i++)
+        arr[i] = output[i];
+}
+
+/*-----------Main function-----------*/
+void radixSort(int arr[], int n, unsigned long long &comparisons) {
+    // Find the maximum number to
+    // know number of digits
+    int m = getMax(arr, n, comparisons);
+
+    // Do counting sort for every digit.
+    // NOTE: exp is passed instead of digit number. 
+    // exp is 10^i where i is current digit number.
+    for (int exp = 1; ++comparisons && m / exp > 0; exp *= 10)
+        countSort(arr, n, exp, comparisons);   
+}
+
+void radixSort_counting(int arr[], int n, unsigned long long &comparisons, double &duration) {
     comparisons = 0;
+    double start = clock();
+    radixSort(arr, n, comparisons);
+    duration = (clock() - start)/(double)CLOCKS_PER_SEC;
 }
 // END RADIX SORT
 ////////////////////////////////////////
