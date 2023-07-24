@@ -205,22 +205,40 @@ bool Command5(vector<string> str_argv)
     ALGORITHM algorithm_1 = getALGORITHM(str_argv[2], name_algo_1);
     ALGORITHM algorithm_2 = getALGORITHM(str_argv[3], name_algo_2);
 
+    if (algorithm_1 == Wrong_CMD_ALGO || algorithm_2 == Wrong_CMD_ALGO) return false;
+
     // get data order
     string str_data_order;
     int int_data_order = getORDER(str_argv[5], str_data_order);
 
+    if (int_data_order > 3) return false;
+
     // prepare input for sorting functions
     int n = stoi(str_argv[4]);
-    int* arr = new int[n];
+    int* data = new int[n];
+    GenerateData(data, n, int_data_order);
+
+    // output data to file
+    ofstream ofs;
+    ofs.open("input.txt");
+    ofs << n << "\n";
+    for (int i = 0; i < n; i++) ofs << data[i] << ' ';
+    ofs.close();
+
     unsigned long long comparisons_algorithm_1, comparisons_algorithm_2;
     double duration_algorithm_1, duration_algorithm_2;
 
+    int* arr = new int[n];
+
+    // copy data to arr then arr will be sorted
+    for (int i = 0; i < n; i++) arr[i] = data[i];
     // count the 1st algorithm
-    GenerateData(arr, n, int_data_order);
     sort[algorithm_1](arr, n, comparisons_algorithm_1, duration_algorithm_1);
 
+
+    // copy data to arr then arr will be sorted
+    for (int i = 0; i < n; i++) arr[i] = data[i];
     // count the 2nd algorithm
-    GenerateData(arr, n, int_data_order);
     sort[algorithm_2](arr, n, comparisons_algorithm_2, duration_algorithm_2);
 
     // display result
@@ -233,7 +251,8 @@ bool Command5(vector<string> str_argv)
          << "Comparisons: " << comparisons_algorithm_1 << " | " << comparisons_algorithm_2 << endl;
 
     delete[] arr;
-    return 1;
+    delete[] data;
+    return true;
 }
 
 void getTASK(int argc,vector<string> str_argv)

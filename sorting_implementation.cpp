@@ -181,7 +181,7 @@ void shellSort_counting(int arr[], int n, unsigned long long &comparisions, doub
 ////////////////////////////////////////
 // HEAP SORT
 /// @param pos the position at which we start to build the heap
-void heap_rebuild(int a[], int n, int pos, unsigned long long &comparisons) {
+void heapSort_heapRebuild(int a[], int n, int pos, unsigned long long &comparisons) {
     bool is_heap = false;
     int k;
     while (is_heap == false && ++comparisons && 2*pos + 1 < n) {
@@ -193,9 +193,19 @@ void heap_rebuild(int a[], int n, int pos, unsigned long long &comparisons) {
         } else is_heap = true;
     }
 }
-void heap_construction(int a[], int n, unsigned long long &comparisons) {
+void heapSprt_heapConstruction(int a[], int n, unsigned long long &comparisons) {
     for (int i = n/2 - 1; ++comparisons && i >= 0; --i) {
-        heap_rebuild(a, n, i, comparisons);
+        heapSort_heapRebuild(a, n, i, comparisons);
+    }
+}
+
+void heapSort(int a[], int n, unsigned long long &comparisons) {
+    heapSprt_heapConstruction(a, n, comparisons);
+    unsigned int sorted_part = n - 1;
+    while (++comparisons && sorted_part > 0) {
+        swap(a[0], a[sorted_part]);
+        heapSort_heapRebuild(a, sorted_part, 0, comparisons);
+        sorted_part--;
     }
 }
 
@@ -203,13 +213,7 @@ void heapSort_counting(int a[], int n, unsigned long long &comparisons, double &
     comparisons = 0;
     duration = 0;
     double start = clock();
-    heap_construction(a, n, comparisons);
-    unsigned int sorted_part = n - 1;
-    while (++comparisons && sorted_part > 0) {
-        swap(a[0], a[sorted_part]);
-        heap_rebuild(a, sorted_part, 0, comparisons);
-        sorted_part--;
-    }
+    heapSort(a, n, comparisons);
     duration = (clock() - start)/(double) CLOCKS_PER_SEC;
 }
 // END HEAP SORT
@@ -365,7 +369,7 @@ void quickSort_counting(int arr[], int n, unsigned long long &comparisons, doubl
 ////////////////////////////////////////
 // COUNTING SORT
 // src: https://www.geeksforgeeks.org/counting-sort/
-void countingSort(int a[], int n, unsigned long long &comparisons) {
+int* countingSort(int a[], int n, unsigned long long &comparisons) {
     // it was guranteed that all a[i] are non-negative integers
     int i;
 
@@ -376,35 +380,31 @@ void countingSort(int a[], int n, unsigned long long &comparisons) {
     }
 
     int* occurrences = new int[max_element + 1]{0};
-
     for (i = 0; ++comparisons && i < n; ++i) {
         occurrences[a[i]]++;
     }
 
     // change occurrences[i] so that occurrences[i] now contains actual positions of this character in output array
-    for (i = 1; ++comparisons && i < n; ++i) {
+    for (i = 1; ++comparisons && i < max_element + 1; ++i) {
         occurrences[i] = occurrences[i] + occurrences[i - 1];
     }
 
     // build output array
-    int idx = 0;
-    for (i = 0; ++comparisons && i <= max_element && ++comparisons && idx < n;) {
-        if (occurrences[i] != 0) {
-            a[idx] = i;
-            cout << a[idx] << ' ';
-            idx++;
-            occurrences[i]--;
-        } else {
-            i++;
-        }
+    int* output_array = new int[n];
+    for (i = 0; ++comparisons && i < n; i++) {
+        output_array[occurrences[a[i]]] = a[i];
+        occurrences[a[i]]--;
     }
-    delete[] occurrences;
+
+    return output_array;
 }
 void countingSort_counting(int a[], int n, unsigned long long &comparisons, double &duration) {
     comparisons = 0;
     double start = clock();
-    countingSort(a, n, comparisons);
+    int* res = countingSort(a, n, comparisons);
     duration = (clock() - start)/(double)CLOCKS_PER_SEC;
+    for (int i = 0; i < n; i++) a[i] = res[i];
+    delete[] res;
 }
 // END COUNTING SORT
 ////////////////////////////////////////
