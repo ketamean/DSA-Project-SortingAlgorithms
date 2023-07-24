@@ -1,4 +1,3 @@
-#pragma once
 #include "DataGenerator.cpp"
 enum SORTING_ALGORITHM {
     SELECTION_SORT,
@@ -16,10 +15,7 @@ enum SORTING_ALGORITHM {
 ///////////////////////////////////////
 ////////////////////////////////////////
 // SELECTION SORT
-void selectionSort_counting(int arr[], int n, unsigned long long &comparisions, double &duration) {
-    double start = clock(); //get current time
-    comparisions = 0;
-    
+void selection_Sort(int arr[], int n, unsigned long long &comparisions) {
     for (int i = 0; ++comparisions && i < n; i++) {
         int minIndex = i, minVal = arr[i];
 
@@ -32,6 +28,14 @@ void selectionSort_counting(int arr[], int n, unsigned long long &comparisions, 
 
         swap(arr[i], arr[minIndex]);
     }
+}
+
+void selectionSort_counting(int arr[], int n, unsigned long long &comparisions, double &duration) {
+    comparisions = 0;
+    duration = 0;
+    double start = clock(); //get current time
+
+    selection_Sort(arr, n, comparisions);
     duration = (clock() - start)/(double) CLOCKS_PER_SEC;
 }
 // END SELECTION SORT
@@ -102,11 +106,9 @@ void bubbleSort_counting(int arr[], int n, unsigned long long &comparisions, dou
 ////////////////////////////////////////
 ////////////////////////////////////////
 // SHAKER SORT
-void shakerSort_counting(int arr[], int n, unsigned long long &comparisions, double &duration) {
-    double start = clock();
+void shaker_Sort(int arr[], int n, unsigned long long &comparisions) {
     bool swapped = true;
     int begin = 0, end = n - 1;
-    comparisions = 0;
 
     while (++comparisions && swapped) {
         //set swap = false
@@ -135,6 +137,14 @@ void shakerSort_counting(int arr[], int n, unsigned long long &comparisions, dou
         //increase the starting point
         ++begin;
     }
+}
+
+void shakerSort_counting(int arr[], int n, unsigned long long &comparisions, double &duration) {
+    comparisions = 0;
+    duration = 0;
+    double start = clock();
+
+    shaker_Sort(arr, n, comparisions);
     duration = (clock() - start)/(double)CLOCKS_PER_SEC;
 }
 // END SHAKER SORT
@@ -221,6 +231,7 @@ void heapSort_counting(int a[], int n, unsigned long long &comparisons, double &
 // MERGE SORT
 
 //func to merge two subarrays
+//src: https://www.geeksforgeeks.org/merge-sort/
 void mergeSort_merge (int arr[], int const left, int const mid, int const right, unsigned long long &comparisions) {
     int const subArr1 = mid - left + 1;
     int const subArr2 = right - mid;
@@ -269,8 +280,7 @@ void mergeSort_merge (int arr[], int const left, int const mid, int const right,
 //function to divide arr
 //begin = left index, end = right index of the sub-array of arr to be sorted
 void mergeSort_divide(int arr[], unsigned long long &comparisions, int const begin, int const end) {
-    if (begin >= end) {
-        comparisions++;
+    if (comparisions++ && begin >= end) {
         return;
     }
 
@@ -283,8 +293,9 @@ void mergeSort_divide(int arr[], unsigned long long &comparisions, int const beg
 }
 
 void mergeSort_counting(int arr[], int n, unsigned long long &comparision, double &duration) {
-    double start = clock(); //get current time
     comparision = 0;
+    duration = 0;
+    double start = clock(); //get current time
 
     mergeSort_divide(arr, comparision, 0, n - 1);
     duration = (clock() - start)/(double) CLOCKS_PER_SEC;
@@ -298,31 +309,33 @@ void mergeSort_counting(int arr[], int n, unsigned long long &comparision, doubl
 // QUICK SORT
 int MedianOfThree(int arr[], int left, int right, unsigned long long &comparisons)
 {
-    //l < r < m0
+    //l <= m <= r
     int mid = (left + right)/2;
-    if(++ comparisons && arr[mid] < arr[left])
-        swap(arr[mid], arr[left]);
-    if(++comparisons && arr[mid] < arr[right])
-        swap(arr[right], arr[mid]);
-    if(++comparisons && arr[right] < arr[left])
+    if(++comparisons && arr[left] > arr[right])
         swap( arr[right], arr[left]);
-    return arr[right];
+    if(++comparisons && arr[mid] > arr[right])
+        swap(arr[right], arr[mid]);
+    if(++ comparisons && arr[left] > arr[mid])
+        swap(arr[mid], arr[left]);
+    int median = arr[mid];
+    swap(arr[mid], arr[right - 1]);
+    return median;
 }
 int partition(int arr[], int low, int high, unsigned long long &comparisons)
 {
     int pivot = MedianOfThree(arr, low, high, comparisons);
-     
+    
     // Index of smaller element and indicates
     // the right position of pivot found so far
     int ind_p1 = low - 1;
-    for (int i = low; i <= high - 1; i++) {
+    for (int i = low; i < high - 1; i++) {
         if (arr[i] <= pivot)
         {
             ind_p1 ++;
             swap(arr[ind_p1], arr[i]);
         }
     }
-    swap(arr[ind_p1 + 1], arr[high]);
+    swap(arr[ind_p1 + 1], arr[high - 1]);
     return (ind_p1 + 1);
 }
  
@@ -350,8 +363,6 @@ void quickSort_counting(int arr[], int n, unsigned long long &comparisons, doubl
     duration = (clock() - start)/(double) CLOCKS_PER_SEC;
 }
 
-//reference: https://www.studocu.com/vn/document/truong-dai-hoc-su-pham-ky-thuat-thanh-pho-ho-chi-minh/computer-architecture-and-assembly-language/flash-sort/60588066
-
 // END QUICK SORT
 ////////////////////////////////////////
 ////////////////////////////////////////
@@ -369,8 +380,62 @@ void countingSort_counting(int a[], int n, unsigned long long &comparisons, doub
 ///////////////////////////////////////
 ////////////////////////////////////////
 // RADIX SORT
-void radixSort_counting(int a[], int n, unsigned long long &comparisons, double &duration) {
+//https://www.geeksforgeeks.org/radix-sort/
+
+/*-----------Supporting functions-----------*/
+// Getting the max value in arr[]
+int getMax(int arr[], int n, unsigned long long &comparisons)
+{
+    int mx = arr[0];
+    for (int i = 1; ++comparisons && i < n; i++)
+        if (++comparisons && arr[i] > mx)
+            mx = arr[i];
+    return mx;
+}
+
+// Using counting sort of arr[] according to the digit represented by exp.
+void countSort(int arr[], int n, int exp, unsigned long long &comparisons)
+{
+    int *output = new int[n]; //Create boxes to store indie values
+    int i, count[10] = {0};
+
+    // Store number of occurrences in count[] for each exp
+    for (i = 0; ++comparisons && i < n; i++)
+        count[(arr[i] / exp) % 10]++;
+
+    // Change count[i] so that it contains actual position of this digit in output[]
+    for (i = 1; ++comparisons && i < 10; i++)
+        count[i] += count[i - 1];
+
+    // Build the output array
+    for (i = n - 1; ++comparisons && i >= 0; i--) {
+        output[count[(arr[i] / exp) % 10] - 1] = arr[i];
+        count[(arr[i] / exp) % 10]--;
+    }
+    // Copy the output array to arr[], so that arr[] now contains sorted numbers according to current digit
+    for (i = 0; ++comparisons && i < n; i++)
+        arr[i] = output[i];
+    delete []output;
+}
+
+/*-----------Main function-----------*/
+void radixSort(int arr[], int n, unsigned long long &comparisons) {
+    // Find the maximum number to
+    // know number of digits
+    int m = getMax(arr, n, comparisons);
+
+    // Do counting sort for every digit.
+    // NOTE: exp is passed instead of digit number. 
+    // exp is 10^i where i is current digit number.
+    for (int exp = 1; ++comparisons && m / exp > 0; exp *= 10)
+        countSort(arr, n, exp, comparisons);   
+}
+
+void radixSort_counting(int arr[], int n, unsigned long long &comparisons, double &duration) {
     comparisons = 0;
+    double start = clock();
+    radixSort(arr, n, comparisons);
+    duration = (clock() - start)/(double)CLOCKS_PER_SEC;
 }
 // END RADIX SORT
 ////////////////////////////////////////
@@ -379,26 +444,7 @@ void radixSort_counting(int a[], int n, unsigned long long &comparisons, double 
 ///////////////////////////////////////
 ////////////////////////////////////////
 // FLASH SORT
-// void InsertionSort(int *arr, int n, unsigned long long &comparisons)
-// {
-//     int value_i, pos;
-//     for(int i = 1;(++comparisons) && i < n ; i++)
-//     {
-//         value_i = arr[i];
-//         pos = i - 1; // previous position
-//         while(++comparisons && 0 <= pos && ++comparisons &&  value_i < arr[pos])
-//         {
-//             //shift up value of pos to pos + 1
-//             arr[pos + 1] = arr[pos];
-//             pos --;
-//         }
-
-//         //pos = - 1 or arr[pos] <= value_i  
-//         //add value i to pos + 1
-//         arr[pos + 1] = value_i;
-//     }
-// }
-
+//reference: https://www.studocu.com/vn/document/truong-dai-hoc-su-pham-ky-thuat-thanh-pho-ho-chi-minh/computer-architecture-and-assembly-language/flash-sort/60588066
 void Flashsort(int *arr, int n, unsigned long long &comparisons)
 {
     double start = clock(); //get current time
@@ -473,6 +519,7 @@ void Flashsort(int *arr, int n, unsigned long long &comparisons)
             move++;
         }
     }
+    insertion_sort(arr, n, comparisons);
 }
 
 void flashSort_counting(int arr[], int n, unsigned long long &comparisons, double &duration)
@@ -495,13 +542,16 @@ void flashSort_counting(int arr[], int n, unsigned long long &comparisons, doubl
 //     unsigned long long count;
 //     double duration;
 //     cout << "comparisons,duration" << endl;
-//     for (int i = 0; i < 6; i++) {
+//     for (int i = 0; i < 1; i++) {
 //         n = number_of_element[i];
 //         GenerateRandomData(arr, n);
 //         cout << "Heap: ";
-//         heapSort_counting(arr, n, count, duration);
+//         quickSort_counting(arr, n, count, duration);
 //         cout << count << "," << duration << endl;
-//         
+//         for(int i = 0; i < n - 1; i++)
+//             if(arr[i] > arr[i+1])
+//                 cout << "false";
+        
 //     }
 
 //     /* unsigned long long count2;

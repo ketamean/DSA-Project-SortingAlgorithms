@@ -115,11 +115,6 @@ int getORDER(string order, string& nameOrder)
         nameOrder = "Randomized";
         return 0;
     } 
-    if(order == "-nsorted")
-    {
-        nameOrder =  "Nearly Sorted";
-        return 3;
-    } 
     if(order == "-sorted") 
     {
         nameOrder = "Sorted";
@@ -130,6 +125,11 @@ int getORDER(string order, string& nameOrder)
         nameOrder = "Reversed";
         return 2;
     }
+    if(order == "-nsorted")
+    {
+        nameOrder =  "Nearly Sorted";
+        return 3;
+    } 
     nameOrder = "Wrong_CMD";
     return 4;
 }
@@ -257,12 +257,93 @@ bool Command2(vector<string> str_argv)
 
 bool Command3(vector<string> str_argv)
 {
+    //get the algorithm name and input size
+    string algorithmName;
+    ALGORITHM algorithm = getALGORITHM(str_argv[2], algorithmName);
+    int inputSize = stoi(str_argv[3]);
 
+    //prep input for sorting func
+    int *arr = new int[inputSize];
+    unsigned long long comparisions;
+    double duration;
+
+    //display header for the algorithm mode
+    cout << "ALGORITHM MODE\n";
+    cout << "Algorithm: " << algorithmName << endl;
+    cout << "Input size: " << inputSize << endl << endl;
+
+    vector<string> orderInput = {"-rand", "-sorted", "-rev", "-nsorted"};
+    //run the algorithm on generated data
+    for (int order = 0; order < 4; order++) {
+        //generate data with the specified order
+        string orderName; //get the orderName ()
+        GenerateData(arr, inputSize, order);
+        getORDER(orderInput[order], orderName);
+
+        //run the sorting algorithm
+        sort[algorithm](arr, inputSize, comparisions, duration);
+        Parameter parameter = getParameter(str_argv[4]);
+
+        //display the result
+        cout << "Input order: " << orderName << endl << "-------------------------" << endl;
+        if (parameter == Comp) {
+            cout << "Comparisions: " << comparisions << endl;
+        } else if (parameter == Time) {
+            cout << "Running time: " << duration << endl;
+        } else {
+            cout << "Running time: " << duration << endl << "Comparisions: " << comparisions << endl;
+        }
+        cout << "-------------------------" << endl << endl;
+    }
+
+    //clean up memory
+    delete[] arr;
+    return 1;
 }
 
 bool Command4(vector<string> str_argv)
 {
+    // Initialize input for sorting functions
+    int n = stoi(str_argv[4]);
+    int* arr = new int[n];
 
+    string name_algo_1, name_algo_2;
+    unsigned long long comparisons_algo_1, comparisons_algo_2;
+    double duration_algo_1, duration_algo_2;
+
+    ALGORITHM Algo_1 = getALGORITHM(str_argv[2], name_algo_1),
+              Algo_2 = getALGORITHM(str_argv[3], name_algo_2);
+
+    // get data order
+    string str_data_order;
+    int int_data_order = getORDER(str_argv[5], str_data_order);
+
+    if(readfile(str_argv[4], arr, n) == false)
+    {
+        cout << "The file is not in the correct format!";
+        return 0;
+    }
+
+    // count the 1st algorithm
+    GenerateData(arr, n, int_data_order);
+    sort[Algo_1](arr, n, comparisons_algo_1, duration_algo_1);
+
+    // count the 2nd algorithm
+    GenerateData(arr, n, int_data_order);
+    sort[Algo_2](arr, n, comparisons_algo_2, duration_algo_2);
+    delete []arr;
+
+    cout << "COMPARE MODE\n"
+         << "Algorithm:: " << str_argv[2] << " | " << str_argv[3] << endl
+         << "Input file: " << str_argv[4] << endl
+         << "Input size: " << n << endl 
+         << "File input order: " << str_data_order << endl
+         << "--------------------------------------------\n"
+         << "Running time: " << duration_algo_1 << " | " << duration_algo_1 << endl
+         << "Comparisons:  " << comparisons_algo_2 << " | " << comparisons_algo_2 << endl;
+    
+    delete[] arr;
+    return 1;
 }
 
 bool Command5(vector<string> str_argv)

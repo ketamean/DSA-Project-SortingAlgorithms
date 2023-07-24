@@ -1,4 +1,3 @@
-#include "sorting_implementation.cpp"
 #include "cmd.cpp"
 
 int main (int argc, const char* argv[]) {
