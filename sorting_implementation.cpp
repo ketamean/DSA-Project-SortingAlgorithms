@@ -203,14 +203,14 @@ void heapSort_heapRebuild(int a[], int n, int pos, unsigned long long &compariso
         } else is_heap = true;
     }
 }
-void heapSprt_heapConstruction(int a[], int n, unsigned long long &comparisons) {
+void heapSort_heapConstruction(int a[], int n, unsigned long long &comparisons) {
     for (int i = n/2 - 1; ++comparisons && i >= 0; --i) {
         heapSort_heapRebuild(a, n, i, comparisons);
     }
 }
 
 void heapSort(int a[], int n, unsigned long long &comparisons) {
-    heapSprt_heapConstruction(a, n, comparisons);
+    heapSort_heapConstruction(a, n, comparisons);
     unsigned int sorted_part = n - 1;
     while (++comparisons && sorted_part > 0) {
         swap(a[0], a[sorted_part]);
@@ -486,7 +486,7 @@ void radixSort_counting(int arr[], int n, unsigned long long &comparisons, doubl
 ////////////////////////////////////////
 // FLASH SORT
 //reference: https://www.studocu.com/vn/document/truong-dai-hoc-su-pham-ky-thuat-thanh-pho-ho-chi-minh/computer-architecture-and-assembly-language/flash-sort/60588066
-void Flashsort(int *arr, int n, unsigned long long &comparisons)
+void flashSort(int *arr, int n, unsigned long long &comparisons)
 {
     double start = clock(); //get current time
 
@@ -567,52 +567,9 @@ void flashSort_counting(int arr[], int n, unsigned long long &comparisons, doubl
 {
     comparisons = 0;
     double start = clock(); //get current time
-    Flashsort(arr, n, comparisons);
+    flashSort(arr, n, comparisons);
     duration = (clock() - start)/(double) CLOCKS_PER_SEC;
 }
 // END FLASH SORT
 ////////////////////////////////////////
 ////////////////////////////////////////
-
-// main for debugging
-// int number_of_element[] = {10000, 30000, 50000, 100000, 300000, 500000};
-// int main () {
-//     int arr[500000];
-//     int n = 10;
-
-//     unsigned long long count;
-//     double duration;
-//     cout << "comparisons,duration" << endl;
-//     for (int i = 0; i < 1; i++) {
-//         n = number_of_element[i];
-//         GenerateRandomData(arr, n);
-//         cout << "Heap: ";
-//         quickSort_counting(arr, n, count, duration);
-//         cout << count << "," << duration << endl;
-//         for(int i = 0; i < n - 1; i++)
-//             if(arr[i] > arr[i+1])
-//                 cout << "false";
-        
-//     }
-
-//     /* unsigned long long count2;
-//     double duration2;
-//     for (int i = 0; i < 6; i++) {
-//         n = number_of_element[i];
-//         GenerateRandomData(arr, n);
-//         cout << "Insert: ";
-//         insertion_sort_counting(arr, n, count2, duration2);
-//         cout << count2 << "," << duration2 << endl;
-//     } */
-
-//     /* unsigned long long count3;
-//     double duration3;
-//     for (int i = 0; i < 6; i++) {
-//         n = number_of_element[i];
-//         GenerateRandomData(arr, n);
-//         cout << "Shell: ";
-//         shellsort_counting(arr, n, count3, duration3);
-//         cout << count3 << "," << duration3 << endl;
-//     } */
-//     return 0;
-// }
