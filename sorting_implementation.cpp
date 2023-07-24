@@ -15,7 +15,7 @@ enum SORTING_ALGORITHM {
 ///////////////////////////////////////
 ////////////////////////////////////////
 // SELECTION SORT
-void selection_Sort(int arr[], int n, unsigned long long &comparisions) {
+void selectionSort_sort(int arr[], int n, unsigned long long &comparisions) {
     for (int i = 0; ++comparisions && i < n; i++) {
         int minIndex = i, minVal = arr[i];
 
@@ -35,7 +35,7 @@ void selectionSort_counting(int arr[], int n, unsigned long long &comparisions, 
     duration = 0;
     double start = clock(); //get current time
 
-    selection_Sort(arr, n, comparisions);
+    selectionSort_sort(arr, n, comparisions);
     duration = (clock() - start)/(double) CLOCKS_PER_SEC;
 }
 // END SELECTION SORT
@@ -106,7 +106,7 @@ void bubbleSort_counting(int arr[], int n, unsigned long long &comparisions, dou
 ////////////////////////////////////////
 ////////////////////////////////////////
 // SHAKER SORT
-void shaker_Sort(int arr[], int n, unsigned long long &comparisions) {
+void shakerSort_sort(int arr[], int n, unsigned long long &comparisions) {
     bool swapped = true;
     int begin = 0, end = n - 1;
 
@@ -144,7 +144,7 @@ void shakerSort_counting(int arr[], int n, unsigned long long &comparisions, dou
     duration = 0;
     double start = clock();
 
-    shaker_Sort(arr, n, comparisions);
+    shakerSort_sort(arr, n, comparisions);
     duration = (clock() - start)/(double)CLOCKS_PER_SEC;
 }
 // END SHAKER SORT
