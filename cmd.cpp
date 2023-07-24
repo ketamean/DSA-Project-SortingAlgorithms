@@ -84,7 +84,7 @@ ALGORITHM getALGORITHM(string algo, string &name_of_algorithm)
         name_of_algorithm = "Quick Sort";
         return Quick;
     }
-    if(algo == "couting-sort") {
+    if(algo == "counting-sort") {
         name_of_algorithm = "Counting Sort";
         return Counting;
     }
@@ -200,7 +200,7 @@ bool  Command1(vector<string> str_argv)
     }
         
     cout << "ALGORITHM MODE" << endl
-            << "Algorithm:: " << str_argv[2] << endl
+            << "Algorithm:: " << name_algo   << endl
             << "Input file: " << str_argv[3] << endl
             << "Input size: " << n << endl;
     sort[ALGO](arr, n, comparisons, duration);
@@ -225,27 +225,27 @@ bool Command2(vector<string> str_argv)
     Parameter PARAM = getParameter(str_argv[5]);
     if(ALGO == Wrong_CMD_ALGO || PARAM == Wrong_CMD_Param) 
     {
-        cout << "name algorithm or output parameter is not correct.";
+        cout << "algorithm or output parameter is not correct.";
         return 0;
     }
     if(ORDER == 4)
     {
-        cout << "name algorithm or output parameter is not correct.";
+        cout << "algorithm or output parameter is not correct.";
         return 0;
     }
     if(isNumber(str_argv[3]) == false)
     {
-        cout << "size isn't number.";
+        cout << "size is not a number.";
         return 0;
     }
 
     unsigned long long comparisons;
     double duration;
-    int n = stoull(str_argv[3]);
+    int n = stoi(str_argv[3]);
     int* arr = new int[n];
 
     cout << "ALGORITHM MODE\n"
-            << "Algorithm:: " << str_argv[2] << endl
+            << "Algorithm: " << name_Algo << endl
             << "Input size: " << n << endl;
 
     GenerateData(arr,n, ORDER);
@@ -279,7 +279,6 @@ bool Command3(vector<string> str_argv)
         string orderName; //get the orderName ()
         GenerateData(arr, inputSize, order);
         getORDER(orderInput[order], orderName);
-
         //run the sorting algorithm
         sort[algorithm](arr, inputSize, comparisions, duration);
         Parameter parameter = getParameter(str_argv[4]);
@@ -287,11 +286,11 @@ bool Command3(vector<string> str_argv)
         //display the result
         cout << "Input order: " << orderName << endl << "-------------------------" << endl;
         if (parameter == Comp) {
-            cout << "Comparisions: " << comparisions << endl;
+            cout << "Comparisons: " << comparisions << endl;
         } else if (parameter == Time) {
             cout << "Running time: " << duration << endl;
         } else {
-            cout << "Running time: " << duration << endl << "Comparisions: " << comparisions << endl;
+            cout << "Running time: " << duration << endl << "Comparisons: " << comparisions << endl;
         }
         cout << "-------------------------" << endl << endl;
     }

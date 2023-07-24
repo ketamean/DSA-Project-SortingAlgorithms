@@ -1,17 +1,4 @@
 #include "DataGenerator.cpp"
-enum SORTING_ALGORITHM {
-    SELECTION_SORT,
-    INSERTION_SORT,
-    BUBBLE_SORT,
-    HEAP_SORT,
-    MERGE_SORT,
-    QUICK_SORT,
-    RADIX_SORT,
-    SHAKER_SORT, 
-    SHELL_SORT,
-    COUNTING_SORT,
-    FLASH_SORT
-};
 ///////////////////////////////////////
 ////////////////////////////////////////
 // SELECTION SORT
@@ -319,7 +306,7 @@ int MedianOfThree(int arr[], int left, int right, unsigned long long &comparison
         swap( arr[right], arr[left]);
     if(++comparisons && arr[mid] > arr[right])
         swap(arr[right], arr[mid]);
-    if(++ comparisons && arr[left] > arr[mid])
+    if(++comparisons && arr[left] > arr[mid])
         swap(arr[mid], arr[left]);
     int median = arr[mid];
     swap(arr[mid], arr[right - 1]);
@@ -385,23 +372,34 @@ int* countingSort(int a[], int n, unsigned long long &comparisons) {
         if (++comparisons && a[i] > max_element) max_element = a[i];
     }
 
+    // cout << "max = " << max_element << endl;
+
     int* occurrences = new int[max_element + 1]{0};
+    // memset(occurrences, 0, max_element + 1);
     for (i = 0; ++comparisons && i < n; ++i) {
         occurrences[a[i]]++;
     }
+
+    // cout << "Occ: ";
+    // for (int i = 0; i < max_element + 1; i++) cout << occurrences[i] << ' ';
+    // cout << endl;
 
     // change occurrences[i] so that occurrences[i] now contains actual positions of this character in output array
     for (i = 1; ++comparisons && i < max_element + 1; ++i) {
         occurrences[i] = occurrences[i] + occurrences[i - 1];
     }
 
+    // cout << "Pos: ";
+    // for (int i = 0; i < max_element + 1; i++) cout << occurrences[i] << ' ';
+    // cout << endl;
+
     // build output array
     int* output_array = new int[n];
     for (i = 0; ++comparisons && i < n; i++) {
-        output_array[occurrences[a[i]]] = a[i];
-        occurrences[a[i]]--;
+        output_array[--occurrences[a[i]]] = a[i];
     }
 
+    delete[] occurrences;
     return output_array;
 }
 void countingSort_counting(int a[], int n, unsigned long long &comparisons, double &duration) {
