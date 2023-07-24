@@ -7,7 +7,7 @@ using namespace std;
 void (*sort[11])(int*, int, unsigned long long&, double&) = 
     {
         selectionSort_counting,
-        insertion_sort_counting,
+        insertionSort_counting,
         bubbleSort_counting,
         shakerSort_counting,
         shellSort_counting,

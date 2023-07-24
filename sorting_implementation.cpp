@@ -45,7 +45,7 @@ void selectionSort_counting(int arr[], int n, unsigned long long &comparisions, 
 ///////////////////////////////////////
 ////////////////////////////////////////
 // INSERTION SORT
-void insertion_sort(int arr[], int n, unsigned long long &comparisions)
+void insertionSort(int arr[], int n, unsigned long long &comparisions)
 {
     int i, key, j;
     for (i = 1; ++comparisions && i < n; i++) {
@@ -61,11 +61,11 @@ void insertion_sort(int arr[], int n, unsigned long long &comparisions)
     }
 }
 
-void insertion_sort_counting(int arr[], int n, unsigned long long &comparisions, double &duration) {
+void insertionSort_counting(int arr[], int n, unsigned long long &comparisions, double &duration) {
     comparisions = 0;
     duration = 0;
     double start = clock(); //get current time
-    insertion_sort(arr, n, comparisions);
+    insertionSort(arr, n, comparisions);
     duration = (clock() - start)/(double) CLOCKS_PER_SEC;
 }
 // END INSERTION SORT
@@ -154,7 +154,7 @@ void shakerSort_counting(int arr[], int n, unsigned long long &comparisions, dou
 ///////////////////////////////////////
 ////////////////////////////////////////
 // SHELL SORT
-void shellsort(int arr[], int n, unsigned long long &comparisions) {
+void shellSort(int arr[], int n, unsigned long long &comparisions) {
     // Pick a big interval value, in this case is n/2
     for (int interval = n/2; ++comparisions && interval > 0; interval/= 2)
     {
@@ -180,7 +180,7 @@ void shellSort_counting(int arr[], int n, unsigned long long &comparisions, doub
     comparisions = 0;
     duration = 0;
     double start = clock(); //get current time
-    shellsort(arr, n, comparisions);
+    shellSort(arr, n, comparisions);
     duration = (clock() - start)/(double) CLOCKS_PER_SEC;
 }
 // END SHELL SORT
@@ -381,10 +381,9 @@ void countingSort_counting(int a[], int n, unsigned long long &comparisons, doub
 ////////////////////////////////////////
 // RADIX SORT
 //https://www.geeksforgeeks.org/radix-sort/
-
 /*-----------Supporting functions-----------*/
 // Getting the max value in arr[]
-int getMax(int arr[], int n, unsigned long long &comparisons)
+int radixSort_getMax(int arr[], int n, unsigned long long &comparisons)
 {
     int mx = arr[0];
     for (int i = 1; ++comparisons && i < n; i++)
@@ -394,10 +393,11 @@ int getMax(int arr[], int n, unsigned long long &comparisons)
 }
 
 // Using counting sort of arr[] according to the digit represented by exp.
-void countSort(int arr[], int n, int exp, unsigned long long &comparisons)
+void radixSort_countSort(int arr[], int n, int exp, unsigned long long &comparisons)
 {
     int *output = new int[n]; //Create boxes to store indie values
-    int i, count[10] = {0};
+    int i;
+    int count[10] = {0};
 
     // Store number of occurrences in count[] for each exp
     for (i = 0; ++comparisons && i < n; i++)
@@ -413,6 +413,7 @@ void countSort(int arr[], int n, int exp, unsigned long long &comparisons)
         count[(arr[i] / exp) % 10]--;
     }
     // Copy the output array to arr[], so that arr[] now contains sorted numbers according to current digit
+    // AKA sort the actual array
     for (i = 0; ++comparisons && i < n; i++)
         arr[i] = output[i];
     delete []output;
@@ -422,13 +423,14 @@ void countSort(int arr[], int n, int exp, unsigned long long &comparisons)
 void radixSort(int arr[], int n, unsigned long long &comparisons) {
     // Find the maximum number to
     // know number of digits
-    int m = getMax(arr, n, comparisons);
+    int m = radixSort_getMax(arr, n, comparisons);
 
     // Do counting sort for every digit.
     // NOTE: exp is passed instead of digit number. 
     // exp is 10^i where i is current digit number.
     for (int exp = 1; ++comparisons && m / exp > 0; exp *= 10)
-        countSort(arr, n, exp, comparisons);   
+        radixSort_countSort(arr, n, exp, comparisons);   
+    return;
 }
 
 void radixSort_counting(int arr[], int n, unsigned long long &comparisons, double &duration) {
@@ -519,7 +521,7 @@ void Flashsort(int *arr, int n, unsigned long long &comparisons)
             move++;
         }
     }
-    insertion_sort(arr, n, comparisons);
+    insertionSort(arr, n, comparisons);
 }
 
 void flashSort_counting(int arr[], int n, unsigned long long &comparisons, double &duration)
