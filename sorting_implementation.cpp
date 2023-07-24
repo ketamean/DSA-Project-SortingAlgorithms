@@ -8,7 +8,7 @@ enum SORTING_ALGORITHM {
     MERGE_SORT,
     QUICK_SORT,
     RADIX_SORT,
-    SHAKER_SORT,
+    SHAKER_SORT, 
     SHELL_SORT,
     COUNTING_SORT,
     FLASH_SORT
@@ -296,40 +296,34 @@ void mergeSort_counting(int arr[], int n, unsigned long long &comparision, doubl
 ///////////////////////////////////////
 ////////////////////////////////////////
 // QUICK SORT
-int partition(int arr[], int start, int end)
+int MedianOfThree(int arr[], int left, int right, unsigned long long &comparisons)
 {
- 
-    int pivot = arr[start];
- 
-    int count = 0;
-    for (int i = start + 1; i <= end; i++) {
+    //l < r < m0
+    int mid = (left + right)/2;
+    if(++ comparisons && arr[mid] < arr[left])
+        swap(arr[mid], arr[left]);
+    if(++comparisons && arr[mid] < arr[right])
+        swap(arr[right], arr[mid]);
+    if(++comparisons && arr[right] < arr[left])
+        swap( arr[right], arr[left]);
+    return arr[right];
+}
+int partition(int arr[], int low, int high, unsigned long long &comparisons)
+{
+    int pivot = MedianOfThree(arr, low, high, comparisons);
+     
+    // Index of smaller element and indicates
+    // the right position of pivot found so far
+    int ind_p1 = low - 1;
+    for (int i = low; i <= high - 1; i++) {
         if (arr[i] <= pivot)
-            count++;
-    }
- 
-    // Giving pivot element its correct position
-    int pivotIndex = start + count;
-    swap(arr[pivotIndex], arr[start]);
- 
-    // Sorting left and right parts of the pivot element
-    int i = start, j = end;
- 
-    while (i < pivotIndex && j > pivotIndex) {
- 
-        while (arr[i] <= pivot) {
-            i++;
-        }
- 
-        while (arr[j] > pivot) {
-            j--;
-        }
- 
-        if (i < pivotIndex && j > pivotIndex) {
-            swap(arr[i++], arr[j--]);
+        {
+            ind_p1 ++;
+            swap(arr[ind_p1], arr[i]);
         }
     }
- 
-    return pivotIndex;
+    swap(arr[ind_p1 + 1], arr[high]);
+    return (ind_p1 + 1);
 }
  
 void quickSort(int arr[], int start, int end, unsigned long long &comparisons)
@@ -339,7 +333,7 @@ void quickSort(int arr[], int start, int end, unsigned long long &comparisons)
         return;
  
     // partitioning the array
-    int p = partition(arr, start, end);
+    int p = partition(arr, start, end, comparisons);
  
     // Sorting the left part
     quickSort(arr, start, p - 1, comparisons);
@@ -385,25 +379,25 @@ void radixSort_counting(int a[], int n, unsigned long long &comparisons, double 
 ///////////////////////////////////////
 ////////////////////////////////////////
 // FLASH SORT
-void InsertionSort(int *arr, int n, unsigned long long &comparisons)
-{
-    int value_i, pos;
-    for(int i = 1;(++comparisons) && i < n ; i++)
-    {
-        value_i = arr[i];
-        pos = i - 1; // previous position
-        while(++comparisons && 0 <= pos && ++comparisons &&  value_i < arr[pos])
-        {
-            //shift up value of pos to pos + 1
-            arr[pos + 1] = arr[pos];
-            pos --;
-        }
+// void InsertionSort(int *arr, int n, unsigned long long &comparisons)
+// {
+//     int value_i, pos;
+//     for(int i = 1;(++comparisons) && i < n ; i++)
+//     {
+//         value_i = arr[i];
+//         pos = i - 1; // previous position
+//         while(++comparisons && 0 <= pos && ++comparisons &&  value_i < arr[pos])
+//         {
+//             //shift up value of pos to pos + 1
+//             arr[pos + 1] = arr[pos];
+//             pos --;
+//         }
 
-        //pos = - 1 or arr[pos] <= value_i  
-        //add value i to pos + 1
-        arr[pos + 1] = value_i;
-    }
-}
+//         //pos = - 1 or arr[pos] <= value_i  
+//         //add value i to pos + 1
+//         arr[pos + 1] = value_i;
+//     }
+// }
 
 void Flashsort(int *arr, int n, unsigned long long &comparisons)
 {
@@ -479,7 +473,6 @@ void Flashsort(int *arr, int n, unsigned long long &comparisons)
             move++;
         }
     }
-    InsertionSort(arr,n, comparisons);
 }
 
 void flashSort_counting(int arr[], int n, unsigned long long &comparisons, double &duration)
@@ -508,6 +501,7 @@ void flashSort_counting(int arr[], int n, unsigned long long &comparisons, doubl
 //         cout << "Heap: ";
 //         heapSort_counting(arr, n, count, duration);
 //         cout << count << "," << duration << endl;
+//         
 //     }
 
 //     /* unsigned long long count2;
