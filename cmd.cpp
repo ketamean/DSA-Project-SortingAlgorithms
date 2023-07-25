@@ -204,6 +204,10 @@ bool  Command1(vector<string> str_argv)
             << "Input file: " << str_argv[3] << endl
             << "Input size: " << n << endl;
     sort[ALGO](arr, n, comparisons, duration);
+    ofstream ofs("output.txt");
+    ofs << n << endl;
+    for(int i = 0; i < n; i++)
+        ofs << arr[i] << " ";
     if(PARAM == Time)
         cout << "Runing time: " << duration << endl;
     else if(PARAM == Comp)
@@ -213,7 +217,7 @@ bool  Command1(vector<string> str_argv)
         cout << "Runing time: " << duration << endl;
         cout << "Comparisons: " << comparisons << endl;
     }
-    cout << endl;
+    delete []arr;
     return true;
 }
 
@@ -250,6 +254,10 @@ bool Command2(vector<string> str_argv)
 
     GenerateData(arr,n, ORDER);
     sort[ALGO](arr, n, comparisons, duration);
+    ofstream ofs("output.txt");
+    ofs << n << endl;
+    for(int i = 0; i < n; i++)
+        ofs << arr[i] << " ";
     printResultAlgoMode(NameORDER, PARAM, duration, comparisons);
     delete []arr;
     return true;

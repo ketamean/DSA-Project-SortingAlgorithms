@@ -307,7 +307,7 @@ void mergeSort_counting(int arr[], int n, unsigned long long &comparision, doubl
 ///////////////////////////////////////
 ////////////////////////////////////////
 // QUICK SORT
-int MedianOfThree(int arr[], int left, int right, unsigned long long &comparisons)
+int quickSort_getMedianOfThree(int arr[], int left, int right, unsigned long long &comparisons)
 {
     //l <= m <= r
     int mid = (left + right)/2;
@@ -321,9 +321,9 @@ int MedianOfThree(int arr[], int left, int right, unsigned long long &comparison
     swap(arr[mid], arr[right - 1]);
     return median;
 }
-int partition(int arr[], int low, int high, unsigned long long &comparisons)
+int quickSort_partition(int arr[], int low, int high, unsigned long long &comparisons)
 {
-    int pivot = MedianOfThree(arr, low, high, comparisons);
+    int pivot = quickSort_getMedianOfThree(arr, low, high, comparisons);
     
     // Index of smaller element and indicates
     // the right position of pivot found so far
@@ -346,7 +346,7 @@ void quickSort(int arr[], int start, int end, unsigned long long &comparisons)
         return;
  
     // partitioning the array
-    int p = partition(arr, start, end, comparisons);
+    int p = quickSort_partition(arr, start, end, comparisons);
  
     // Sorting the left part
     quickSort(arr, start, p - 1, comparisons);
@@ -445,46 +445,45 @@ void radixSort_counting(int arr[], int n, unsigned long long &comparisons, doubl
 ////////////////////////////////////////
 // FLASH SORT
 //reference: https://www.studocu.com/vn/document/truong-dai-hoc-su-pham-ky-thuat-thanh-pho-ho-chi-minh/computer-architecture-and-assembly-language/flash-sort/60588066
-void Flashsort(int *arr, int n, unsigned long long &comparisons)
+void flashSort(int *arr, int n, unsigned long long &comparisons)
 {
-    double start = clock(); //get current time
-
     if(++comparisons && n <= 0)
         return;
     //find min and max of the array to be sorted
-    int min, max;
-    min = max = arr[0];
-    for(int i = 0; ++comparisons && i < n; i++)
+    int max = 0, min = arr[0];
+    for(int i = 1; i < n; i++)
     {
-        if(++comparisons && arr[i] < min)
+        if(arr[i] < min)
             min = arr[i];
-        if(++comparisons && arr[i] > max)
-            max = arr[i];
+        if(arr[i] > arr[max])
+            max = i;
+        comparisons += 2;
     }
+    comparisons += n;
 
     //if the element in arr are the same, don't need arrange
-    if(++comparisons && min == max)
+    if(++comparisons && min == arr[max])
         return;
 
     //Step 2: Declare 1 dynamic array class with m element
     int m = std::floor(0.45 * n); // number of classes
-    int *cls = new int[m];
-    for(int i = 0; ++comparisons && i < m; i++)
-        cls[i] = 0;
+    int *cls = new int[m]();
 
+    double c = (m - 1) / static_cast<double>(arr[max] - min);
     //Step 3: count number of element in classes to rule
     //element arr[i] will of class k với k = floor( (m - 1) * (arr[i] - min) / (max - min) )
-    for(int i = 0; ++comparisons && i < n; i++)
+    for(int i = 0; i < n; i++)
     {
-        int k = std::floor( 1.0 * (m - 1) * (arr[i] - min) /  (max - min));
+        int k = std::floor( c * (arr[i] - min) );
         cls[k] ++;
     }
+    comparisons += (n + 1);
 
     //Step 4 Calc end position of each class z according to the formula
     //cls[z] = cls[z] + cls[z-1];
-    for(int i = 1; ++comparisons && i < m; i++)
+    for(int i = 1; i < m; i++)
         cls[i] += cls[i-1];
-    
+    comparisons += m;
 
     //Step 5 global permutation
     //Put the element to be subclassed in the appropriate position
@@ -492,41 +491,41 @@ void Flashsort(int *arr, int n, unsigned long long &comparisons)
     //-> continue the cycle with the new element to be subclassed
     //-> repeat until it returns to the original position, then complete the loop
     
-    int move = 0, i = 0;
+    swap(arr[max], arr[0]);
+    int move = 0, i = 0, flash;
     while(++comparisons && move < n - 1)
     {
         //k is position of class a[i]
-        int k = std::floor( 1.0 * (m - 1) * (arr[i] - min) / (max - min));
+        int k = std::floor( c * (arr[i] - min) );
         //When i >= cls[k] means that arr[i] is already in its subclass position
         //so we ignore and continue to increase i to consider the next elements
 
         while(++comparisons && i >= cls[k])
         {
             i++;
-            k = std::floor( 1.0 * (m - 1) * (arr[i] - min) / (max - min));
+            k = std::floor( c * (arr[i] - min) );
         }
-        int flash = arr[i]; // element ready to be subclassed
+        flash = arr[i]; // element ready to be subclassed
         // When i = cls[k] is equivalent to subclassing k is full, so when it is not full, we continue to iterate
         // every time we return an element that matches its subclass, we reduce the last position of that subclass
         // at the same time increase the night variable the number of swaps by one unit
         while(++comparisons && i != cls[k])
         {
-            k = std::floor( 1.0 * (m - 1) * (arr[i] - min) / (max - min));
+            k = std::floor( c * (flash - min));
             cls[k]--;
-            int hold = arr[cls[k]];
-            arr[cls[k]] = flash;
-            flash = hold; // put the element in the wrong place and assign it to the molecule and prepare it for subclassing
+            swap(arr[cls[k]], flash); // put the element in the wrong place and assign it to the molecule and prepare it for subclassing
             move++;
         }
     }
     insertion_sort(arr, n, comparisons);
+    delete []cls;
 }
 
 void flashSort_counting(int arr[], int n, unsigned long long &comparisons, double &duration)
 {
     comparisons = 0;
     double start = clock(); //get current time
-    Flashsort(arr, n, comparisons);
+    flashSort(arr, n, comparisons);
     duration = (clock() - start)/(double) CLOCKS_PER_SEC;
 }
 // END FLASH SORT
@@ -534,25 +533,23 @@ void flashSort_counting(int arr[], int n, unsigned long long &comparisons, doubl
 ////////////////////////////////////////
 
 // main for debugging
-// int number_of_element[] = {10000, 30000, 50000, 100000, 300000, 500000};
-// int main () {
-//     int arr[500000];
-//     int n = 10;
+int number_of_element[] = {10000, 30000, 50000, 100000, 300000, 500000};
+int main () {
+    int arr[500000];
+    int n = 10;
 
-//     unsigned long long count;
-//     double duration;
-//     cout << "comparisons,duration" << endl;
-//     for (int i = 0; i < 1; i++) {
-//         n = number_of_element[i];
-//         GenerateRandomData(arr, n);
-//         cout << "Heap: ";
-//         quickSort_counting(arr, n, count, duration);
-//         cout << count << "," << duration << endl;
-//         for(int i = 0; i < n - 1; i++)
-//             if(arr[i] > arr[i+1])
-//                 cout << "false";
-        
-//     }
+    unsigned long long count;
+    double duration;
+    cout << "n,comparisons,duration" << endl;
+    for (int i = 0; i < 6; i++) {
+        n = number_of_element[i];
+        GenerateRandomData(arr, n);
+        flashSort_counting(arr, n, count, duration);
+        cout << n << "," << count << "," << duration << endl;
+        for(int i = 0; i < n - 1; i++)
+            if(arr[i] > arr[i+1])
+                cout << "false";
+    }
 
 //     /* unsigned long long count2;
 //     double duration2;
@@ -573,5 +570,5 @@ void flashSort_counting(int arr[], int n, unsigned long long &comparisons, doubl
 //         shellsort_counting(arr, n, count3, duration3);
 //         cout << count3 << "," << duration3 << endl;
 //     } */
-//     return 0;
-// }
+    return 0;
+}
