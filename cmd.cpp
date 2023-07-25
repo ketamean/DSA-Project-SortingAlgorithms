@@ -7,7 +7,7 @@ using namespace std;
 void (*sort[11])(int*, int, unsigned long long&, double&) = 
     {
         selectionSort_counting,
-        insertion_sort_counting,
+        insertionSort_counting,
         bubbleSort_counting,
         shakerSort_counting,
         shellSort_counting,
@@ -84,7 +84,7 @@ ALGORITHM getALGORITHM(string algo, string &name_of_algorithm)
         name_of_algorithm = "Quick Sort";
         return Quick;
     }
-    if(algo == "couting-sort") {
+    if(algo == "counting-sort") {
         name_of_algorithm = "Counting Sort";
         return Counting;
     }
@@ -200,7 +200,7 @@ bool  Command1(vector<string> str_argv)
     }
         
     cout << "ALGORITHM MODE" << endl
-            << "Algorithm:: " << str_argv[2] << endl
+            << "Algorithm:: " << name_algo   << endl
             << "Input file: " << str_argv[3] << endl
             << "Input size: " << n << endl;
     sort[ALGO](arr, n, comparisons, duration);
@@ -229,27 +229,27 @@ bool Command2(vector<string> str_argv)
     Parameter PARAM = getParameter(str_argv[5]);
     if(ALGO == Wrong_CMD_ALGO || PARAM == Wrong_CMD_Param) 
     {
-        cout << "name algorithm or output parameter is not correct.";
+        cout << "algorithm or output parameter is not correct.";
         return 0;
     }
     if(ORDER == 4)
     {
-        cout << "name algorithm or output parameter is not correct.";
+        cout << "algorithm or output parameter is not correct.";
         return 0;
     }
     if(isNumber(str_argv[3]) == false)
     {
-        cout << "size isn't number.";
+        cout << "size is not a number.";
         return 0;
     }
 
     unsigned long long comparisons;
     double duration;
-    int n = stoull(str_argv[3]);
+    int n = stoi(str_argv[3]);
     int* arr = new int[n];
 
     cout << "ALGORITHM MODE\n"
-            << "Algorithm:: " << str_argv[2] << endl
+            << "Algorithm: " << name_Algo << endl
             << "Input size: " << n << endl;
 
     GenerateData(arr,n, ORDER);
@@ -287,7 +287,6 @@ bool Command3(vector<string> str_argv)
         string orderName; //get the orderName ()
         GenerateData(arr, inputSize, order);
         getORDER(orderInput[order], orderName);
-
         //run the sorting algorithm
         sort[algorithm](arr, inputSize, comparisions, duration);
         Parameter parameter = getParameter(str_argv[4]);
@@ -295,11 +294,11 @@ bool Command3(vector<string> str_argv)
         //display the result
         cout << "Input order: " << orderName << endl << "-------------------------" << endl;
         if (parameter == Comp) {
-            cout << "Comparisions: " << comparisions << endl;
+            cout << "Comparisons: " << comparisions << endl;
         } else if (parameter == Time) {
             cout << "Running time: " << duration << endl;
         } else {
-            cout << "Running time: " << duration << endl << "Comparisions: " << comparisions << endl;
+            cout << "Running time: " << duration << endl << "Comparisons: " << comparisions << endl;
         }
         cout << "-------------------------" << endl << endl;
     }
@@ -362,22 +361,40 @@ bool Command5(vector<string> str_argv)
     ALGORITHM algorithm_1 = getALGORITHM(str_argv[2], name_algo_1);
     ALGORITHM algorithm_2 = getALGORITHM(str_argv[3], name_algo_2);
 
+    if (algorithm_1 == Wrong_CMD_ALGO || algorithm_2 == Wrong_CMD_ALGO) return false;
+
     // get data order
     string str_data_order;
     int int_data_order = getORDER(str_argv[5], str_data_order);
 
+    if (int_data_order > 3) return false;
+
     // prepare input for sorting functions
     int n = stoi(str_argv[4]);
-    int* arr = new int[n];
+    int* data = new int[n];
+    GenerateData(data, n, int_data_order);
+
+    // output data to file
+    ofstream ofs;
+    ofs.open("input.txt");
+    ofs << n << "\n";
+    for (int i = 0; i < n; i++) ofs << data[i] << ' ';
+    ofs.close();
+
     unsigned long long comparisons_algorithm_1, comparisons_algorithm_2;
     double duration_algorithm_1, duration_algorithm_2;
 
+    int* arr = new int[n];
+
+    // copy data to arr then arr will be sorted
+    for (int i = 0; i < n; i++) arr[i] = data[i];
     // count the 1st algorithm
-    GenerateData(arr, n, int_data_order);
     sort[algorithm_1](arr, n, comparisons_algorithm_1, duration_algorithm_1);
 
+
+    // copy data to arr then arr will be sorted
+    for (int i = 0; i < n; i++) arr[i] = data[i];
     // count the 2nd algorithm
-    GenerateData(arr, n, int_data_order);
     sort[algorithm_2](arr, n, comparisons_algorithm_2, duration_algorithm_2);
 
     // display result
@@ -390,7 +407,8 @@ bool Command5(vector<string> str_argv)
          << "Comparisons: " << comparisons_algorithm_1 << " | " << comparisons_algorithm_2 << endl;
 
     delete[] arr;
-    return 1;
+    delete[] data;
+    return true;
 }
 
 void getTASK(int argc,vector<string> str_argv)
