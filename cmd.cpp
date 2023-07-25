@@ -289,6 +289,10 @@ bool Command3(vector<string> str_argv)
         getORDER(orderInput[order], orderName);
         //run the sorting algorithm
         sort[algorithm](arr, inputSize, comparisions, duration);
+        ofstream ofs("output.txt");
+        ofs << inputSize << endl;
+        for(int i = 0; i < inputSize; i++)
+            ofs << arr[i] << " ";
         Parameter parameter = getParameter(str_argv[4]);
 
         //display the result
