@@ -115,21 +115,21 @@ int getORDER(string order, string& nameOrder)
         nameOrder = "Randomized";
         return 0;
     } 
+    if(order == "-nsorted")
+    {
+        nameOrder =  "Nearly Sorted";
+        return 1;
+    } 
     if(order == "-sorted") 
     {
         nameOrder = "Sorted";
-        return 1;
+        return 2;
     }
     if(order == "-rev")
     {
         nameOrder = "Reversed";
-        return 2;
-    }
-    if(order == "-nsorted")
-    {
-        nameOrder =  "Nearly Sorted";
         return 3;
-    } 
+    }
     nameOrder = "Wrong_CMD";
     return 4;
 }
@@ -253,8 +253,13 @@ bool Command2(vector<string> str_argv)
             << "Input size: " << n << endl;
 
     GenerateData(arr,n, ORDER);
+    ofstream ofs("input.txt");
+    ofs << n << endl;
+    for(int i = 0; i < n; i++)
+        ofs << arr[i] << " ";
+    ofs.close();
     sort[ALGO](arr, n, comparisons, duration);
-    ofstream ofs("output.txt");
+    ofs.open("output.txt");
     ofs << n << endl;
     for(int i = 0; i < n; i++)
         ofs << arr[i] << " ";
@@ -280,19 +285,24 @@ bool Command3(vector<string> str_argv)
     cout << "Algorithm: " << algorithmName << endl;
     cout << "Input size: " << inputSize << endl << endl;
 
-    vector<string> orderInput = {"-rand", "-sorted", "-rev", "-nsorted"};
+    vector<string> orderInput = {"-rand", "-nsorted", "-sorted", "-rev"};
+    ofstream ofs;
     //run the algorithm on generated data
     for (int order = 0; order < 4; order++) {
         //generate data with the specified order
         string orderName; //get the orderName ()
         GenerateData(arr, inputSize, order);
-        getORDER(orderInput[order], orderName);
-        //run the sorting algorithm
-        sort[algorithm](arr, inputSize, comparisions, duration);
-        ofstream ofs("output.txt");
+
+        //write down file
+        ofs.open("input_" + to_string(order + 1) + ".txt");
         ofs << inputSize << endl;
         for(int i = 0; i < inputSize; i++)
             ofs << arr[i] << " ";
+        ofs.close();
+
+        getORDER(orderInput[order], orderName);
+        //run the sorting algorithm
+        sort[algorithm](arr, inputSize, comparisions, duration);
         Parameter parameter = getParameter(str_argv[4]);
 
         //display the result
@@ -304,7 +314,7 @@ bool Command3(vector<string> str_argv)
         } else {
             cout << "Running time: " << duration << endl << "Comparisons: " << comparisions << endl;
         }
-        cout << "-------------------------" << endl << endl;
+        cout << endl << endl;
     }
 
     //clean up memory
@@ -315,8 +325,8 @@ bool Command3(vector<string> str_argv)
 bool Command4(vector<string> str_argv)
 {
     // Initialize input for sorting functions
-    int n = stoi(str_argv[4]);
-    int* arr = new int[n];
+    int n;
+    int* arr;
 
     string name_algo_1, name_algo_2;
     unsigned long long comparisons_algo_1, comparisons_algo_2;
@@ -326,8 +336,8 @@ bool Command4(vector<string> str_argv)
               Algo_2 = getALGORITHM(str_argv[3], name_algo_2);
 
     // get data order
-    string str_data_order;
-    int int_data_order = getORDER(str_argv[5], str_data_order);
+    // string str_data_order;
+    // int int_data_order = getORDER(str_argv[5], str_data_order);
 
     if(readfile(str_argv[4], arr, n) == false)
     {
@@ -336,11 +346,11 @@ bool Command4(vector<string> str_argv)
     }
 
     // count the 1st algorithm
-    GenerateData(arr, n, int_data_order);
+    // GenerateData(arr, n, int_data_order);
     sort[Algo_1](arr, n, comparisons_algo_1, duration_algo_1);
 
     // count the 2nd algorithm
-    GenerateData(arr, n, int_data_order);
+    // GenerateData(arr, n, int_data_order);
     sort[Algo_2](arr, n, comparisons_algo_2, duration_algo_2);
     delete []arr;
 
@@ -348,12 +358,10 @@ bool Command4(vector<string> str_argv)
          << "Algorithm:: " << str_argv[2] << " | " << str_argv[3] << endl
          << "Input file: " << str_argv[4] << endl
          << "Input size: " << n << endl 
-         << "File input order: " << str_data_order << endl
          << "--------------------------------------------\n"
-         << "Running time: " << duration_algo_1 << " | " << duration_algo_1 << endl
-         << "Comparisons:  " << comparisons_algo_2 << " | " << comparisons_algo_2 << endl;
+         << "Running time: " << duration_algo_1 << " | " << duration_algo_2 << endl
+         << "Comparisons:  " << comparisons_algo_1 << " | " << comparisons_algo_2 << endl;
     
-    delete[] arr;
     return 1;
 }
 
