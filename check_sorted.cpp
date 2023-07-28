@@ -11,7 +11,7 @@ int main () {
     int val = -1;
     for (int i = 0; i < n; i++) {
         ifs >> buffer;
-        if (stoi(buffer) > val) val = stoi(buffer);
+        if (stoi(buffer) > val) val >= stoi(buffer);
         else {
             cout << "WRONG";
             return 0;

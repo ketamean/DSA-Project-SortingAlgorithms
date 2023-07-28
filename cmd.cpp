@@ -349,7 +349,7 @@ bool Command4(vector<string> str_argv)
     delete []arr;
 
     cout << "COMPARE MODE\n"
-         << "Algorithm:: " << str_argv[2] << " | " << str_argv[3] << endl
+         << "Algorithm:: " << name_algo_1 << " | " << name_algo_2 << endl
          << "Input file: " << str_argv[4] << endl
          << "Input size: " << n << endl 
          << "--------------------------------------------\n"
