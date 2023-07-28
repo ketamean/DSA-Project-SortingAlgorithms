@@ -335,10 +335,6 @@ bool Command4(vector<string> str_argv)
     ALGORITHM Algo_1 = getALGORITHM(str_argv[2], name_algo_1),
               Algo_2 = getALGORITHM(str_argv[3], name_algo_2);
 
-    // get data order
-    // string str_data_order;
-    // int int_data_order = getORDER(str_argv[5], str_data_order);
-
     if(readfile(str_argv[4], arr, n) == false)
     {
         cout << "The file is not in the correct format!";
@@ -346,11 +342,9 @@ bool Command4(vector<string> str_argv)
     }
 
     // count the 1st algorithm
-    // GenerateData(arr, n, int_data_order);
     sort[Algo_1](arr, n, comparisons_algo_1, duration_algo_1);
 
     // count the 2nd algorithm
-    // GenerateData(arr, n, int_data_order);
     sort[Algo_2](arr, n, comparisons_algo_2, duration_algo_2);
     delete []arr;
 
